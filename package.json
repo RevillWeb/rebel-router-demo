@@ -1,0 +1,12 @@
+{
+  "name": "rebel-router-demo",
+  "version": "0.0.1",
+  "description": "A simple demo showcasing usage and capabilities of rebel-router.",
+  "license": "MIT",
+  "repository": "https://github.com/RevillWeb/rebel-router-demo.git",
+  "main": "src/rebel-router.js",
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0"
+  }
+}
