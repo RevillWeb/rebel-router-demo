@@ -56,17 +56,17 @@
 
 	var _starships = __webpack_require__(6);
 
-	var _vehicles = __webpack_require__(10);
+	var _vehicles = __webpack_require__(7);
 
-	var _species = __webpack_require__(11);
+	var _species = __webpack_require__(8);
 
-	var _planets = __webpack_require__(12);
+	var _planets = __webpack_require__(9);
 
-	var _info = __webpack_require__(7);
+	var _info = __webpack_require__(10);
 
-	var _rebelRepeater = __webpack_require__(8);
+	var _rebelRepeater = __webpack_require__(11);
 
-	var _rebelLoading = __webpack_require__(9);
+	var _rebelLoading = __webpack_require__(12);
 
 	//Configure the main app router with the main resource list page and the info page.
 	var MainRouter = new _rebelRouter.RebelRouter("main-view"); /**
@@ -497,7 +497,7 @@
 	            this.type = null;
 	            this.page = 1;
 	            this.response = null;
-	            this.innerHTML = '\n            <rbl-loading id="loading" color="#ff6" background-color="#000"></rbl-loading>\n            <h1 id="title"></h1>\n            <ul class="resource-list">\n                <rbl-repeater id="list-row"></rbl-repeater>\n            </ul>\n            <div class="list-controls">\n                <button class="btn" id="previous"><span class="icon icon-arrow-left2"></span> Preview</button>\n                <div class="num" id="page-num">1</div>\n                <button class="btn" id="next">Next <span class="icon icon-arrow-right2"></span></button>\n            </div>\n        ';
+	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <h1 id="title"></h1>\n            <ul class="resource-list">\n                <rebel-repeater id="list-row"></rebel-repeater>\n            </ul>\n            <div class="list-controls">\n                <button class="btn" id="previous"><span class="icon icon-arrow-left2"></span> Preview</button>\n                <div class="num" id="page-num">1</div>\n                <button class="btn" id="next">Next <span class="icon icon-arrow-right2"></span></button>\n            </div>\n        ';
 	            this.$loader = this.querySelector('#loading');
 	            this.$next = this.querySelector('#next');
 	            this.$next.addEventListener("click", function () {
@@ -722,7 +722,7 @@
 	            this.type = null;
 	            this.renderChild = null;
 	            this.data = {};
-	            this.innerHTML = '\n            <rbl-loading id="loading" color="#ff6" background-color="#000"></rbl-loading>\n            <a href="#" id="back-btn"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
+	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
 	            this.$loader = this.querySelector('#loading');
 	            this.$stats = this.querySelector('#stats');
 	        }
@@ -836,248 +836,6 @@
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Created by Leon Revill on 07/03/16.
-	 * Blog: http://www.revilweb.com
-	 * GitHub: https://github.com/RevillWeb
-	 * Twitter: @RevillWeb
-	 */
-
-	var InfoPage = exports.InfoPage = function (_HTMLElement) {
-	    _inherits(InfoPage, _HTMLElement);
-
-	    function InfoPage() {
-	        _classCallCheck(this, InfoPage);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(InfoPage).apply(this, arguments));
-	    }
-
-	    _createClass(InfoPage, [{
-	        key: "createdCallback",
-	        value: function createdCallback() {
-	            this.template = "<p>This is the contact page. <a href=\"#/\">Home</a></p>";
-	        }
-	    }, {
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            this.render();
-	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            this.innerHTML = this.template;
-	        }
-	    }]);
-
-	    return InfoPage;
-	}(HTMLElement);
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Created by Leon Revill on 10/01/2016.
-	 * Blog: http://www.revilweb.com
-	 * GitHub: https://github.com/RevillWeb
-	 * Twitter: @RevillWeb
-	 */
-
-	var RblRepeater = exports.RblRepeater = function (_HTMLElement) {
-	    _inherits(RblRepeater, _HTMLElement);
-
-	    function RblRepeater() {
-	        _classCallCheck(this, RblRepeater);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RblRepeater).apply(this, arguments));
-	    }
-
-	    _createClass(RblRepeater, [{
-	        key: 'createdCallback',
-	        value: function createdCallback() {
-	            this.content = [];
-	            this.template = this.innerHTML;
-	            if (this.getAttribute('shadow') == "true") {
-	                this.createShadowRoot();
-	            }
-	        }
-	    }, {
-	        key: 'attachedCallback',
-	        value: function attachedCallback() {
-
-	            this.render();
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            var element = this.getAttribute('element');
-	            var html = element !== null ? "<" + element.toLowerCase() + ">" : "";
-	            if (Array.isArray(this.content)) {
-	                this.content.forEach(function (item) {
-	                    html += RblRepeater.interpolate(_this2.template, item);
-	                });
-	            } else {
-	                throw new Error("Content should be an Array of objects.");
-	            }
-	            html += element !== null ? "</" + element.toLowerCase() + ">" : "";
-	            if (this.getAttribute('shadow') == "true") {
-	                this.shadowRoot.innerHTML = html;
-	                this.innerHTML = "";
-	            } else {
-	                this.innerHTML = html;
-	            }
-	        }
-	    }, {
-	        key: 'setContent',
-	        value: function setContent(content) {
-	            this.content = content;
-	            this.render();
-	        }
-	    }, {
-	        key: 'setTemplate',
-	        value: function setTemplate(template) {
-	            this.template = template;
-	            this.render();
-	        }
-	    }, {
-	        key: 'attributeChangedCallback',
-	        value: function attributeChangedCallback(name) {
-	            switch (name) {
-	                case "content":
-	                    this.content = RblRepeater.fromJson(this.getAttribute('content'));
-	                    this.render();
-	                    break;
-	            }
-	        }
-	    }], [{
-	        key: 'interpolate',
-	        value: function interpolate(template, obj) {
-	            if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) == "object") {
-	                for (var key in obj) {
-	                    var find = "${" + key + "}";
-	                    if (template.indexOf(find) > -1) {
-	                        template = template.replace(find, obj[key]);
-	                        delete obj[key];
-	                    }
-	                }
-	            }
-	            return template;
-	        }
-	    }, {
-	        key: 'fromJson',
-	        value: function fromJson(str) {
-	            var obj = null;
-	            if (typeof str == "string") {
-	                try {
-	                    obj = JSON.parse(str);
-	                } catch (e) {
-	                    throw new Error("Invalid JSON string provided. ");
-	                }
-	            }
-	            return obj;
-	        }
-	    }]);
-
-	    return RblRepeater;
-	}(HTMLElement);
-
-	document.registerElement("rbl-repeater", RblRepeater);
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Created by Leon Revill on 07/03/16.
-	 * Blog: http://www.revilweb.com
-	 * GitHub: https://github.com/RevillWeb
-	 * Twitter: @RevillWeb
-	 */
-
-	var RblLoading = exports.RblLoading = function (_HTMLElement) {
-	    _inherits(RblLoading, _HTMLElement);
-
-	    function RblLoading() {
-	        _classCallCheck(this, RblLoading);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RblLoading).apply(this, arguments));
-	    }
-
-	    _createClass(RblLoading, [{
-	        key: "createdCallback",
-	        value: function createdCallback() {
-	            this.createShadowRoot();
-	            this.backgroundColor = this.getAttribute("background-color") || "#FFF";
-	            this.color = this.getAttribute("color") || "#000";
-	            this.shadowRoot.innerHTML = "\n            <style>\n                .loader {\n                    position: absolute;\n                    background-color: " + this.backgroundColor + ";\n                    top: 0;\n                    bottom: 0;\n                    width: 100%;\n                    color: " + this.color + ";\n                    display: flex;\n                    flex-direction: column;\n                    justify-content: center;\n                    align-items: center;\n                    font-size: 32px;\n                }\n                .loader.hidden {\n                    display: none;\n                }\n                .spinner {\n                    width: 40px;\n                    height: 40px;\n                    margin: 100px auto;\n                    background-color: " + this.color + ";\n                    border-radius: 100%;\n                    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;\n                    animation: sk-scaleout 1.0s infinite ease-in-out;\n                }\n\n                @-webkit-keyframes sk-scaleout {\n                    0% { -webkit-transform: scale(0) }\n                    100% {\n                        -webkit-transform: scale(1.0);\n                        opacity: 0;\n                    }\n                }\n\n                @keyframes sk-scaleout {\n                    0% {\n                        -webkit-transform: scale(0);\n                        transform: scale(0);\n                    } 100% {\n                        -webkit-transform: scale(1.0);\n                        transform: scale(1.0);\n                        opacity: 0;\n                    }\n                }\n            </style>\n            <div class=\"loader hidden\">\n                <div class=\"spinner\"></div>\n            </div>\n        ";
-	        }
-	    }, {
-	        key: "show",
-	        value: function show() {
-	            this.shadowRoot.querySelector(".loader").className = "loader";
-	        }
-	    }, {
-	        key: "hide",
-	        value: function hide() {
-	            this.shadowRoot.querySelector('.loader').className = "loader hidden";
-	        }
-	    }]);
-
-	    return RblLoading;
-	}(HTMLElement);
-
-	document.registerElement('rbl-loading', RblLoading);
-
-/***/ },
-/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1133,7 +891,7 @@
 	}(_resourceItem.ResourceItem);
 
 /***/ },
-/* 11 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1189,7 +947,7 @@
 	}(_resourceItem.ResourceItem);
 
 /***/ },
-/* 12 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1243,6 +1001,247 @@
 
 	    return PlanetsResource;
 	}(_resourceItem.ResourceItem);
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Created by Leon Revill on 07/03/16.
+	 * Blog: http://www.revilweb.com
+	 * GitHub: https://github.com/RevillWeb
+	 * Twitter: @RevillWeb
+	 */
+
+	var InfoPage = exports.InfoPage = function (_HTMLElement) {
+	    _inherits(InfoPage, _HTMLElement);
+
+	    function InfoPage() {
+	        _classCallCheck(this, InfoPage);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(InfoPage).apply(this, arguments));
+	    }
+
+	    _createClass(InfoPage, [{
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.template = "<p>This is the contact page. <a href=\"#/\">Home</a></p>";
+	        }
+	    }, {
+	        key: "attachedCallback",
+	        value: function attachedCallback() {
+	            this.render();
+	        }
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            this.innerHTML = this.template;
+	        }
+	    }]);
+
+	    return InfoPage;
+	}(HTMLElement);
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Created by Leon Revill on 10/01/2016.
+	 * Blog: http://www.revilweb.com
+	 * GitHub: https://github.com/RevillWeb
+	 * Twitter: @RevillWeb
+	 */
+
+	var RebelRepeater = exports.RebelRepeater = function (_HTMLElement) {
+	    _inherits(RebelRepeater, _HTMLElement);
+
+	    function RebelRepeater() {
+	        _classCallCheck(this, RebelRepeater);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelRepeater).apply(this, arguments));
+	    }
+
+	    _createClass(RebelRepeater, [{
+	        key: 'createdCallback',
+	        value: function createdCallback() {
+	            this.content = [];
+	            this.template = this.innerHTML;
+	            if (this.getAttribute('shadow') == "true") {
+	                this.createShadowRoot();
+	            }
+	        }
+	    }, {
+	        key: 'attachedCallback',
+	        value: function attachedCallback() {
+	            this.render();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var element = this.getAttribute('element');
+	            var html = element !== null ? "<" + element.toLowerCase() + ">" : "";
+	            if (Array.isArray(this.content)) {
+	                this.content.forEach(function (item) {
+	                    html += RebelRepeater.interpolate(_this2.template, item);
+	                });
+	            } else {
+	                throw new Error("Content should be an Array of objects.");
+	            }
+	            html += element !== null ? "</" + element.toLowerCase() + ">" : "";
+	            if (this.getAttribute('shadow') == "true") {
+	                this.shadowRoot.innerHTML = html;
+	                this.innerHTML = "";
+	            } else {
+	                this.innerHTML = html;
+	            }
+	        }
+	    }, {
+	        key: 'setContent',
+	        value: function setContent(content) {
+	            this.content = content;
+	            this.render();
+	        }
+	    }, {
+	        key: 'setTemplate',
+	        value: function setTemplate(template) {
+	            this.template = template;
+	            this.render();
+	        }
+	    }, {
+	        key: 'attributeChangedCallback',
+	        value: function attributeChangedCallback(name) {
+	            switch (name) {
+	                case "content":
+	                    this.content = RebelRepeater.fromJson(this.getAttribute('content'));
+	                    this.render();
+	                    break;
+	            }
+	        }
+	    }], [{
+	        key: 'interpolate',
+	        value: function interpolate(template, obj) {
+	            if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) == "object") {
+	                for (var key in obj) {
+	                    var find = "${" + key + "}";
+	                    if (template.indexOf(find) > -1) {
+	                        template = template.replace(find, obj[key]);
+	                        delete obj[key];
+	                    }
+	                }
+	            }
+	            return template;
+	        }
+	    }, {
+	        key: 'fromJson',
+	        value: function fromJson(str) {
+	            var obj = null;
+	            if (typeof str == "string") {
+	                try {
+	                    obj = JSON.parse(str);
+	                } catch (e) {
+	                    throw new Error("Invalid JSON string provided. ");
+	                }
+	            }
+	            return obj;
+	        }
+	    }]);
+
+	    return RebelRepeater;
+	}(HTMLElement);
+
+	document.registerElement("rebel-repeater", RebelRepeater);
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Created by Leon Revill on 07/03/16.
+	 * Blog: http://www.revilweb.com
+	 * GitHub: https://github.com/RevillWeb
+	 * Twitter: @RevillWeb
+	 */
+
+	var RebelLoading = exports.RebelLoading = function (_HTMLElement) {
+	    _inherits(RebelLoading, _HTMLElement);
+
+	    function RebelLoading() {
+	        _classCallCheck(this, RebelLoading);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelLoading).apply(this, arguments));
+	    }
+
+	    _createClass(RebelLoading, [{
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.createShadowRoot();
+	            this.backgroundColor = this.getAttribute("background-color") || "#FFF";
+	            this.color = this.getAttribute("color") || "#000";
+	            this.shadowRoot.innerHTML = "\n        <style>\n        .loader {\n                position: absolute;\n                background-color: " + this.backgroundColor + ";\n                top: 0;\n                bottom: 0;\n                width: 100%;\n                color: " + this.color + ";\n                display: flex;\n                flex-direction: column;\n                justify-content: center;\n                align-items: center;\n                font-size: 32px;\n        }\n        .loader.hidden {\n                display: none;\n        }\n        .spinner {\n                width: 40px;\n                height: 40px;\n                margin: 100px auto;\n                background-color: " + this.color + ";\n                border-radius: 100%;\n                -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;\n                animation: sk-scaleout 1.0s infinite ease-in-out;\n        }\n        @-webkit-keyframes sk-scaleout {\n            0% {\n                -webkit-transform: scale(0);\n            }\n            100% {\n                -webkit-transform: scale(1.0);\n                opacity: 0;\n            }\n        }\n        @keyframes sk-scaleout {\n            0% {\n                -webkit-transform: scale(0);\n                transform: scale(0);\n            }\n            100% {\n                -webkit-transform: scale(1.0);\n                transform: scale(1.0);\n                opacity: 0;\n            }\n        }\n        </style>\n        <div class=\"loader hidden\">\n            <div class=\"spinner\"></div>\n        </div>\n    ";
+	        }
+	    }, {
+	        key: "show",
+	        value: function show() {
+	            this.shadowRoot.querySelector(".loader").className = "loader";
+	        }
+	    }, {
+	        key: "hide",
+	        value: function hide() {
+	            this.shadowRoot.querySelector('.loader').className = "loader hidden";
+	        }
+	    }]);
+
+	    return RebelLoading;
+	}(HTMLElement);
+
+	document.registerElement('rebel-loading', RebelLoading);
 
 /***/ }
 /******/ ]);

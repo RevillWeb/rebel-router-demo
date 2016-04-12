@@ -11,10 +11,10 @@ export class ResourcesList extends HTMLElement {
         this.page = 1;
         this.response = null;
         this.innerHTML = `
-            <rbl-loading id="loading" color="#ff6" background-color="#000"></rbl-loading>
+            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>
             <h1 id="title"></h1>
             <ul class="resource-list">
-                <rbl-repeater id="list-row"></rbl-repeater>
+                <rebel-repeater id="list-row"></rebel-repeater>
             </ul>
             <div class="list-controls">
                 <button class="btn" id="previous"><span class="icon icon-arrow-left2"></span> Preview</button>

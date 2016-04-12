@@ -4,7 +4,7 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-import {RebelRouter} from '../../src/rebel-router.js';
+import {RebelRouter} from '../node_modules/rebel-router/src/rebel-router.js';
 import {HomePage} from './pages/home.js';
 import {ResourcesList} from './pages/resource-list.js';
 import {PeopleResource} from './pages/resources/people.js';
@@ -13,8 +13,8 @@ import {VehiclesResource} from './pages/resources/vehicles.js';
 import {SpeciesResource} from './pages/resources/species.js';
 import {PlanetsResource} from './pages/resources/planets.js';
 import {InfoPage} from './pages/info.js';
-import {RblRepeater} from '../../src/rebel-repeater.js';
-import {RblLoading} from './../../src/rebel-loading.js';
+import {RebelRepeater} from '../node_modules/rebel-repeater/lib/rebel-repeater.js';
+import {RebelLoading} from './../node_modules/rebel-loading/lib/rebel-loading.js';
 
 //Configure the main app router with the main resource list page and the info page.
 let MainRouter = new RebelRouter("main-view");

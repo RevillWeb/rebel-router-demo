@@ -12,7 +12,7 @@ export class ResourceItem extends HTMLElement {
         this.renderChild = null;
         this.data = {};
         this.innerHTML = `
-            <rbl-loading id="loading" color="#ff6" background-color="#000"></rbl-loading>
+            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>
             <a href="#" id="back-btn"><span class="icon icon-arrow-left2"></span> Back</a>
             <h1 id="title"></h1>
             <div id="stats"></div>
