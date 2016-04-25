@@ -69,12 +69,12 @@
 	var _rebelLoading = __webpack_require__(12);
 
 	//Configure the main app router with the main resource list page and the info page.
-	var MainRouter = new _rebelRouter.RebelRouter("main-view"); /**
-	                                                             * Created by Leon Revill on 03/03/16.
-	                                                             * Blog: http://www.revilweb.com
-	                                                             * GitHub: https://github.com/RevillWeb
-	                                                             * Twitter: @RevillWeb
-	                                                             */
+	var MainRouter = new _rebelRouter.RebelRouter("main-view", { animation: true }); /**
+	                                                                                  * Created by Leon Revill on 03/03/16.
+	                                                                                  * Blog: http://www.revilweb.com
+	                                                                                  * GitHub: https://github.com/RevillWeb
+	                                                                                  * Twitter: @RevillWeb
+	                                                                                  */
 
 	MainRouter.add("/info", _info.InfoPage).add("/resources/{resource}", _resourceList.ResourcesList).add("/resource/people/{id}", _people.PeopleResource).add("/resource/starships/{id}", _starships.StarshipsResource).add("/resource/vehicles/{id}", _vehicles.VehiclesResource).add("/resource/species/{id}", _species.SpeciesResource).add("/resource/planets/{id}", _planets.PlanetsResource).setDefault(_home.HomePage);
 
@@ -126,13 +126,79 @@
 	        value: function init(config) {
 	            this.initialised = false;
 	            this.config = RebelRouter.mergeConfig({
-	                "shadowRoot": false
+	                "shadowRoot": false,
+	                "animation": false
 	            }, config);
+	        }
+	    }, {
+	        key: "initAnimation",
+	        value: function initAnimation() {
+	            var _this2 = this;
+
+	            //TODO: Move to attached callback so we can only do this if animation is enabled.
+	            //TODO: Figure out the timing issue which is causing current page to move off and back on screen (sometimes doesn't come back)
+	            if (this.config.animation === true) {
+	                var observer = new MutationObserver(function (mutations) {
+	                    var node = mutations[0].addedNodes[0];
+	                    if (node !== undefined) {
+	                        (function () {
+	                            node.className += " rebel-animate enter";
+
+	                            var getOtherChildren = function getOtherChildren() {
+	                                var children = _this2.root.children;
+	                                var results = [];
+	                                for (var i = 0; i < children.length; i++) {
+	                                    var child = children[i];
+	                                    if (child != node) {
+	                                        child.className += " exit";
+	                                        results.push(child);
+	                                    }
+	                                }
+	                                return results;
+	                            };
+
+	                            var otherChildren = getOtherChildren();
+	                            setTimeout(function () {
+	                                if (otherChildren.length > 0) {
+	                                    otherChildren.forEach(function (child) {
+	                                        child.className += " running";
+	                                    });
+	                                }
+	                                node.className += " running";
+	                            }, 10);
+
+	                            var animationEnd = function animationEnd(event) {
+	                                if (event.target.nodeName.toLowerCase() == node.nodeName.toLowerCase() && event.target.className.indexOf("enter") > -1) {
+	                                    (function () {
+	                                        console.log("NODE:", node);
+	                                        var removeChildren = getOtherChildren();
+	                                        node.className = node.className.replace(" enter", "").replace(" running", "");
+	                                        if (removeChildren.length > 0) {
+	                                            removeChildren.forEach(function (child, idx) {
+	                                                try {
+	                                                    _this2.root.removeChild(child);
+	                                                } catch (e) {
+	                                                    console.error(e);
+	                                                    console.log("CHILD:", child);
+	                                                }
+	                                                removeChildren.splice(idx, 1);
+	                                            });
+	                                        }
+	                                    })();
+	                                }
+	                            };
+	                            node.addEventListener("transitionend", animationEnd);
+	                            node.addEventListener("animationend", animationEnd);
+	                        })();
+	                    }
+	                });
+	                observer.observe(this, { childList: true });
+	            }
 	        }
 	    }, {
 	        key: "attachedCallback",
 	        value: function attachedCallback() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            if (this.initialised === false) {
 	                if (this.config.shadowRoot === true) {
@@ -141,9 +207,10 @@
 	                } else {
 	                    this.root = this;
 	                }
+	                this.initAnimation();
 	                this.render();
 	                RebelRouter.pathChange(function () {
-	                    _this2.render();
+	                    _this3.render();
 	                });
 	                this.initialised = true;
 	            }
@@ -169,10 +236,11 @@
 	        value: function render() {
 	            var result = this.current();
 	            if (result !== null) {
-	                //let $template = null;
-	                if (result.templateName !== this.previousTemplate) {
-	                    this.root.innerHTML = "";
+	                if (result.templateName !== this.previousTemplate || this.config.animation === true) {
 	                    this.$template = document.createElement(result.templateName);
+	                    if (this.config.animation !== true) {
+	                        this.root.innerHTML = "";
+	                    }
 	                    this.root.appendChild(this.$template);
 	                    this.previousTemplate = result.templateName;
 	                }
@@ -192,7 +260,7 @@
 	    }, {
 	        key: "add",
 	        value: function add(path, ViewClass) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            if (this.paths === undefined) {
 	                this.paths = {};
@@ -200,7 +268,7 @@
 	            var name = RebelRouter.create(ViewClass);
 	            if (Array.isArray(path)) {
 	                path.forEach(function (item) {
-	                    _this3.paths[item] = name;
+	                    _this4.paths[item] = name;
 	                });
 	            } else {
 	                this.paths[path] = name;
