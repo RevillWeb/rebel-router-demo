@@ -135,56 +135,30 @@
 	        value: function initAnimation() {
 	            var _this2 = this;
 
-	            //TODO: Move to attached callback so we can only do this if animation is enabled.
 	            //TODO: Figure out the timing issue which is causing current page to move off and back on screen (sometimes doesn't come back)
 	            if (this.config.animation === true) {
 	                var observer = new MutationObserver(function (mutations) {
 	                    var node = mutations[0].addedNodes[0];
 	                    if (node !== undefined) {
 	                        (function () {
+	                            var otherChildren = _this2.getOtherChildren(node);
 	                            node.className += " rebel-animate enter";
-
-	                            var getOtherChildren = function getOtherChildren() {
-	                                var children = _this2.root.children;
-	                                var results = [];
-	                                for (var i = 0; i < children.length; i++) {
-	                                    var child = children[i];
-	                                    if (child != node) {
-	                                        child.className += " exit";
-	                                        results.push(child);
-	                                    }
-	                                }
-	                                return results;
-	                            };
-
-	                            var otherChildren = getOtherChildren();
 	                            setTimeout(function () {
 	                                if (otherChildren.length > 0) {
 	                                    otherChildren.forEach(function (child) {
-	                                        child.className += " running";
+	                                        child.className += " exit";
+	                                        setTimeout(function () {
+	                                            child.className += " running";
+	                                        }, 10);
 	                                    });
 	                                }
-	                                node.className += " running";
+	                                setTimeout(function () {
+	                                    node.className += " running";
+	                                }, 10);
 	                            }, 10);
-
 	                            var animationEnd = function animationEnd(event) {
-	                                if (event.target.nodeName.toLowerCase() == node.nodeName.toLowerCase() && event.target.className.indexOf("enter") > -1) {
-	                                    (function () {
-	                                        console.log("NODE:", node);
-	                                        var removeChildren = getOtherChildren();
-	                                        node.className = node.className.replace(" enter", "").replace(" running", "");
-	                                        if (removeChildren.length > 0) {
-	                                            removeChildren.forEach(function (child, idx) {
-	                                                try {
-	                                                    _this2.root.removeChild(child);
-	                                                } catch (e) {
-	                                                    console.error(e);
-	                                                    console.log("CHILD:", child);
-	                                                }
-	                                                removeChildren.splice(idx, 1);
-	                                            });
-	                                        }
-	                                    })();
+	                                if (event.target.className.indexOf("exit") > -1) {
+	                                    _this2.root.removeChild(event.target);
 	                                }
 	                            };
 	                            node.addEventListener("transitionend", animationEnd);
@@ -279,6 +253,20 @@
 	        key: "setDefault",
 	        value: function setDefault(ViewClass) {
 	            return this.add("*", ViewClass);
+	        }
+	    }, {
+	        key: "getOtherChildren",
+	        value: function getOtherChildren(node) {
+	            var children = this.root.children;
+	            var results = [];
+	            for (var i = 0; i < children.length; i++) {
+	                var child = children[i];
+	                if (child != node) {
+	                    //child.className += " exit";
+	                    results.push(child);
+	                }
+	            }
+	            return results;
 	        }
 	    }]);
 
@@ -397,10 +385,12 @@
 	            RebelRouter.changeCallbacks.push(callback);
 	            var changeHandler = function changeHandler(event) {
 	                if (event.oldURL !== undefined && event.newURL != event.oldURL || event.detail !== undefined && event.detail.path !== undefined) {
-	                    var data = event.detail;
-	                    RebelRouter.changeCallbacks.forEach(function (callback) {
-	                        callback(data);
-	                    });
+	                    (function () {
+	                        var data = event.detail;
+	                        RebelRouter.changeCallbacks.forEach(function (callback) {
+	                            callback(data);
+	                        });
+	                    })();
 	                }
 	            };
 	            window.onhashchange = changeHandler;
