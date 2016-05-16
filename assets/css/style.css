@@ -250,6 +250,8 @@ a:hover, a:active {
     position: absolute;
     display: block;
     width: 100%;
+    top: 0;
+    bottom: 0;
     -webkit-transition: left 300ms ease-in-out;
     -moz-transition: left 300ms ease-in-out;
     -o-transition: left 300ms ease-in-out;
@@ -258,12 +260,22 @@ a:hover, a:active {
 .rebel-animate.enter {
     left: 100%;
 }
-.rebel-animate.enter.running {
+.rebel-animate.enter.complete {
     left: 0;
 }
 .rebel-animate.exit {
     left: 0;
 }
-.rebel-animate.exit.running {
+.rebel-animate.exit.complete {
     left: -100%;
+}
+
+.rbl-back .rebel-animate.enter {
+    left: -100%;
+}
+.rbl-back .rebel-animate.enter.complete {
+    left: 0;
+}
+.rbl-back .rebel-animate.exit.complete {
+    left: 100%;
 }

@@ -103,6 +103,13 @@
 	 * Twitter: @RevillWeb
 	 */
 
+	//Custom shim for Safari
+	if (typeof HTMLElement !== 'function') {
+	    var _HTMLElement = function _HTMLElement() {};
+	    _HTMLElement.prototype = HTMLElement.prototype;
+	    HTMLElement = _HTMLElement;
+	}
+
 	function _routeResult(templateName, route, regex, path) {
 	    var result = {};
 	    result.templateName = templateName;
@@ -135,7 +142,6 @@
 	        value: function initAnimation() {
 	            var _this2 = this;
 
-	            //TODO: Figure out the timing issue which is causing current page to move off and back on screen (sometimes doesn't come back)
 	            if (this.config.animation === true) {
 	                var observer = new MutationObserver(function (mutations) {
 	                    var node = mutations[0].addedNodes[0];
@@ -148,12 +154,12 @@
 	                                    otherChildren.forEach(function (child) {
 	                                        child.className += " exit";
 	                                        setTimeout(function () {
-	                                            child.className += " running";
+	                                            child.className += " complete";
 	                                        }, 10);
 	                                    });
 	                                }
 	                                setTimeout(function () {
-	                                    node.className += " running";
+	                                    node.className += " complete";
 	                                }, 10);
 	                            }, 10);
 	                            var animationEnd = function animationEnd(event) {
@@ -183,8 +189,14 @@
 	                }
 	                this.initAnimation();
 	                this.render();
-	                RebelRouter.pathChange(function () {
-	                    _this3.render();
+	                RebelRouter.pathChange(function (isBack) {
+	                    if (isBack === true) {
+	                        _this3.className = _this3.className.replace(" rbl-back", "");
+	                        _this3.className += " rbl-back";
+	                    } else {
+	                        _this3.className = _this3.className.replace(" rbl-back", "");
+	                    }
+	                    _this3.render(isBack);
 	                });
 	                this.initialised = true;
 	            }
@@ -262,7 +274,6 @@
 	            for (var i = 0; i < children.length; i++) {
 	                var child = children[i];
 	                if (child != node) {
-	                    //child.className += " exit";
 	                    results.push(child);
 	                }
 	            }
@@ -277,6 +288,7 @@
 	    function RebelRouter(name, config) {
 	        _classCallCheck(this, RebelRouter);
 
+	        this.stack = [];
 	        this.template = null;
 	        if (RebelRouter.validElementTag(name) === false) {
 	            throw new Error("Invalid tag name provided.");
@@ -384,18 +396,20 @@
 	            }
 	            RebelRouter.changeCallbacks.push(callback);
 	            var changeHandler = function changeHandler(event) {
-	                if (event.oldURL !== undefined && event.newURL != event.oldURL || event.detail !== undefined && event.detail.path !== undefined) {
-	                    (function () {
-	                        var data = event.detail;
-	                        RebelRouter.changeCallbacks.forEach(function (callback) {
-	                            callback(data);
-	                        });
-	                    })();
+	                if (event.oldURL !== undefined && event.newURL != event.oldURL) {
+	                    RebelRouter.changeCallbacks.forEach(function (callback) {
+	                        callback(RebelRouter.isBack);
+	                    });
+	                    RebelRouter.isBack = false;
 	                }
 	            };
+	            if (window.onhashchange === null) {
+	                window.addEventListener("rblback", function () {
+	                    RebelRouter.isBack = true;
+	                });
+	            }
 	            window.onhashchange = changeHandler;
 	            window.onpopstate = changeHandler;
-	            window.addEventListener("pushstate", changeHandler);
 	        }
 	    }, {
 	        key: "getParamsFromUrl",
@@ -457,6 +471,39 @@
 	}(HTMLTemplateElement);
 
 	document.registerElement("rebel-view", RebelView);
+
+	var RebelBackA = function (_HTMLAnchorElement) {
+	    _inherits(RebelBackA, _HTMLAnchorElement);
+
+	    function RebelBackA() {
+	        _classCallCheck(this, RebelBackA);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelBackA).apply(this, arguments));
+	    }
+
+	    _createClass(RebelBackA, [{
+	        key: "attachedCallback",
+	        value: function attachedCallback() {
+	            var _this7 = this;
+
+	            this.addEventListener("click", function (event) {
+	                var path = _this7.getAttribute("href");
+	                event.preventDefault();
+	                if (path !== undefined) {
+	                    window.dispatchEvent(new CustomEvent('rblback'));
+	                }
+	                window.location.hash = path;
+	            });
+	        }
+	    }]);
+
+	    return RebelBackA;
+	}(HTMLAnchorElement);
+
+	document.registerElement("rebel-back-a", {
+	    extends: "a",
+	    prototype: RebelBackA.prototype
+	});
 
 /***/ },
 /* 2 */
@@ -780,7 +827,7 @@
 	            this.type = null;
 	            this.renderChild = null;
 	            this.data = {};
-	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
+	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn" is="rebel-back-a"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
 	            this.$loader = this.querySelector('#loading');
 	            this.$stats = this.querySelector('#stats');
 	        }
