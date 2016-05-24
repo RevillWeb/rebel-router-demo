@@ -69,12 +69,12 @@
 	var _rebelLoading = __webpack_require__(12);
 
 	//Configure the main app router with the main resource list page and the info page.
-	var MainRouter = new _rebelRouter.RebelRouter("main-view"); /**
-	                                                             * Created by Leon Revill on 03/03/16.
-	                                                             * Blog: http://www.revilweb.com
-	                                                             * GitHub: https://github.com/RevillWeb
-	                                                             * Twitter: @RevillWeb
-	                                                             */
+	var MainRouter = new _rebelRouter.RebelRouter("main-view", { animation: true }); /**
+	                                                                                  * Created by Leon Revill on 03/03/16.
+	                                                                                  * Blog: http://www.revilweb.com
+	                                                                                  * GitHub: https://github.com/RevillWeb
+	                                                                                  * Twitter: @RevillWeb
+	                                                                                  */
 
 	MainRouter.add("/info", _info.InfoPage).add("/resources/{resource}", _resourceList.ResourcesList).add("/resource/people/{id}", _people.PeopleResource).add("/resource/starships/{id}", _starships.StarshipsResource).add("/resource/vehicles/{id}", _vehicles.VehiclesResource).add("/resource/species/{id}", _species.SpeciesResource).add("/resource/planets/{id}", _planets.PlanetsResource).setDefault(_home.HomePage);
 
@@ -103,6 +103,13 @@
 	 * Twitter: @RevillWeb
 	 */
 
+	//Custom shim for Safari
+	if (typeof HTMLElement !== 'function') {
+	    var _HTMLElement = function _HTMLElement() {};
+	    _HTMLElement.prototype = HTMLElement.prototype;
+	    HTMLElement = _HTMLElement;
+	}
+
 	function _routeResult(templateName, route, regex, path) {
 	    var result = {};
 	    result.templateName = templateName;
@@ -126,13 +133,52 @@
 	        value: function init(config) {
 	            this.initialised = false;
 	            this.config = RebelRouter.mergeConfig({
-	                "shadowRoot": false
+	                "shadowRoot": false,
+	                "animation": false
 	            }, config);
+	        }
+	    }, {
+	        key: "initAnimation",
+	        value: function initAnimation() {
+	            var _this2 = this;
+
+	            if (this.config.animation === true) {
+	                var observer = new MutationObserver(function (mutations) {
+	                    var node = mutations[0].addedNodes[0];
+	                    if (node !== undefined) {
+	                        (function () {
+	                            var otherChildren = _this2.getOtherChildren(node);
+	                            node.className += " rebel-animate enter";
+	                            setTimeout(function () {
+	                                if (otherChildren.length > 0) {
+	                                    otherChildren.forEach(function (child) {
+	                                        child.className += " exit";
+	                                        setTimeout(function () {
+	                                            child.className += " complete";
+	                                        }, 10);
+	                                    });
+	                                }
+	                                setTimeout(function () {
+	                                    node.className += " complete";
+	                                }, 10);
+	                            }, 10);
+	                            var animationEnd = function animationEnd(event) {
+	                                if (event.target.className.indexOf("exit") > -1) {
+	                                    _this2.root.removeChild(event.target);
+	                                }
+	                            };
+	                            node.addEventListener("transitionend", animationEnd);
+	                            node.addEventListener("animationend", animationEnd);
+	                        })();
+	                    }
+	                });
+	                observer.observe(this, { childList: true });
+	            }
 	        }
 	    }, {
 	        key: "attachedCallback",
 	        value: function attachedCallback() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            if (this.initialised === false) {
 	                if (this.config.shadowRoot === true) {
@@ -141,9 +187,18 @@
 	                } else {
 	                    this.root = this;
 	                }
+	                this.initAnimation();
 	                this.render();
-	                RebelRouter.pathChange(function () {
-	                    _this2.render();
+	                RebelRouter.pathChange(function (isBack) {
+	                    if (_this3.config.animation === true) {
+	                        if (isBack === true) {
+	                            _this3.className = _this3.className.replace(" rbl-back", "");
+	                            _this3.className += " rbl-back";
+	                        } else {
+	                            _this3.className = _this3.className.replace(" rbl-back", "");
+	                        }
+	                    }
+	                    _this3.render();
 	                });
 	                this.initialised = true;
 	            }
@@ -169,10 +224,11 @@
 	        value: function render() {
 	            var result = this.current();
 	            if (result !== null) {
-	                //let $template = null;
-	                if (result.templateName !== this.previousTemplate) {
-	                    this.root.innerHTML = "";
+	                if (result.templateName !== this.previousTemplate || this.config.animation === true) {
 	                    this.$template = document.createElement(result.templateName);
+	                    if (this.config.animation !== true) {
+	                        this.root.innerHTML = "";
+	                    }
 	                    this.root.appendChild(this.$template);
 	                    this.previousTemplate = result.templateName;
 	                }
@@ -192,7 +248,7 @@
 	    }, {
 	        key: "add",
 	        value: function add(path, ViewClass) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            if (this.paths === undefined) {
 	                this.paths = {};
@@ -200,7 +256,7 @@
 	            var name = RebelRouter.create(ViewClass);
 	            if (Array.isArray(path)) {
 	                path.forEach(function (item) {
-	                    _this3.paths[item] = name;
+	                    _this4.paths[item] = name;
 	                });
 	            } else {
 	                this.paths[path] = name;
@@ -212,6 +268,19 @@
 	        value: function setDefault(ViewClass) {
 	            return this.add("*", ViewClass);
 	        }
+	    }, {
+	        key: "getOtherChildren",
+	        value: function getOtherChildren(node) {
+	            var children = this.root.children;
+	            var results = [];
+	            for (var i = 0; i < children.length; i++) {
+	                var child = children[i];
+	                if (child != node) {
+	                    results.push(child);
+	                }
+	            }
+	            return results;
+	        }
 	    }]);
 
 	    return RouterTemplate;
@@ -221,6 +290,7 @@
 	    function RebelRouter(name, config) {
 	        _classCallCheck(this, RebelRouter);
 
+	        this.stack = [];
 	        this.template = null;
 	        if (RebelRouter.validElementTag(name) === false) {
 	            throw new Error("Invalid tag name provided.");
@@ -328,16 +398,20 @@
 	            }
 	            RebelRouter.changeCallbacks.push(callback);
 	            var changeHandler = function changeHandler(event) {
-	                if (event.oldURL !== undefined && event.newURL != event.oldURL || event.detail !== undefined && event.detail.path !== undefined) {
-	                    var data = event.detail;
+	                if (event.oldURL !== undefined && event.newURL != event.oldURL) {
 	                    RebelRouter.changeCallbacks.forEach(function (callback) {
-	                        callback(data);
+	                        callback(RebelRouter.isBack);
 	                    });
+	                    RebelRouter.isBack = false;
 	                }
 	            };
+	            if (window.onhashchange === null) {
+	                window.addEventListener("rblback", function () {
+	                    RebelRouter.isBack = true;
+	                });
+	            }
 	            window.onhashchange = changeHandler;
 	            window.onpopstate = changeHandler;
-	            window.addEventListener("pushstate", changeHandler);
 	        }
 	    }, {
 	        key: "getParamsFromUrl",
@@ -399,6 +473,39 @@
 	}(HTMLTemplateElement);
 
 	document.registerElement("rebel-view", RebelView);
+
+	var RebelBackA = function (_HTMLAnchorElement) {
+	    _inherits(RebelBackA, _HTMLAnchorElement);
+
+	    function RebelBackA() {
+	        _classCallCheck(this, RebelBackA);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelBackA).apply(this, arguments));
+	    }
+
+	    _createClass(RebelBackA, [{
+	        key: "attachedCallback",
+	        value: function attachedCallback() {
+	            var _this7 = this;
+
+	            this.addEventListener("click", function (event) {
+	                var path = _this7.getAttribute("href");
+	                event.preventDefault();
+	                if (path !== undefined) {
+	                    window.dispatchEvent(new CustomEvent('rblback'));
+	                }
+	                window.location.hash = path;
+	            });
+	        }
+	    }]);
+
+	    return RebelBackA;
+	}(HTMLAnchorElement);
+
+	document.registerElement("rebel-back-a", {
+	    extends: "a",
+	    prototype: RebelBackA.prototype
+	});
 
 /***/ },
 /* 2 */
@@ -722,7 +829,7 @@
 	            this.type = null;
 	            this.renderChild = null;
 	            this.data = {};
-	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
+	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn" is="rebel-back-a"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
 	            this.$loader = this.querySelector('#loading');
 	            this.$stats = this.querySelector('#stats');
 	        }
