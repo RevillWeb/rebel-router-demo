@@ -190,13 +190,15 @@
 	                this.initAnimation();
 	                this.render();
 	                RebelRouter.pathChange(function (isBack) {
-	                    if (isBack === true) {
-	                        _this3.className = _this3.className.replace(" rbl-back", "");
-	                        _this3.className += " rbl-back";
-	                    } else {
-	                        _this3.className = _this3.className.replace(" rbl-back", "");
+	                    if (_this3.config.animation === true) {
+	                        if (isBack === true) {
+	                            _this3.className = _this3.className.replace(" rbl-back", "");
+	                            _this3.className += " rbl-back";
+	                        } else {
+	                            _this3.className = _this3.className.replace(" rbl-back", "");
+	                        }
 	                    }
-	                    _this3.render(isBack);
+	                    _this3.render();
 	                });
 	                this.initialised = true;
 	            }
