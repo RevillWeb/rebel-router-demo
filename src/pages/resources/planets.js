@@ -6,34 +6,31 @@
  */
 import {ResourceItem} from "../resource-item.js";
 export class PlanetsResource extends ResourceItem {
-    attachedCallback() {
-        this.type = "planets";
-        this.renderChild = () => {
-            this.$stats.innerHTML = PlanetsResource.renderTemplate(this.data);
-        };
+    createdCallback() {
+        this.init("planets");
     }
-    static renderTemplate(data) {
-        return `
+    render() {
+        this.$stats.innerHTML = `
             <div class="stats-section">
                 <div class="section">
-                    <p><label><span class="icon icon-arrow-down16"></span></label> <span>${data.gravity}</span></p>
+                    <p><label><span class="icon icon-arrow-down16"></span></label> <span>${this.data.gravity}</span></p>
                 </div>
                 <div class="section">
-                    <p><label><span class="icon icon-tree"></span></label> ${data.terrain}</p>
+                    <p><label><span class="icon icon-tree"></span></label> ${this.data.terrain}</p>
                 </div>
             </div>
             <div class="stats-section">
                 <div class="section build">
-                    <p><label>Diameter:</label> ${data.diameter}</p>
+                    <p><label>Diameter:</label> ${this.data.diameter}</p>
                     <span class="icon icon-planet2"></span>
-                    <p><label>Climate:</label> ${data.climate}</p>
+                    <p><label>Climate:</label> ${this.data.climate}</p>
 
                 </div>
                 <div class="section">
-                <p><label>Population:</label> ${data.population}</p>
-                    <p><label>Surface Water:</label> ${data.surface_water}</p>
-                    <p><label>Orbital Period:</label> ${data.orbital_period}</p>
-                    <p><label>Rotation Period:</label> ${data.rotation_period}</p>
+                <p><label>Population:</label> ${this.data.population}</p>
+                    <p><label>Surface Water:</label> ${this.data.surface_water}</p>
+                    <p><label>Orbital Period:</label> ${this.data.orbital_period}</p>
+                    <p><label>Rotation Period:</label> ${this.data.rotation_period}</p>
                 </div>
             </div>`;
     }

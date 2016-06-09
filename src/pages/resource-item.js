@@ -5,11 +5,10 @@
  * Twitter: @RevillWeb
  */
 export class ResourceItem extends HTMLElement {
-    createdCallback() {
+    init(type) {
         this.baseUrl = "http://swapi.co/api/";
         this.id = null;
-        this.type = null;
-        this.renderChild = null;
+        this.type = type;
         this.data = {};
         this.innerHTML = `
             <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>
@@ -22,16 +21,18 @@ export class ResourceItem extends HTMLElement {
     }
     attributeChangedCallback(name) {
         const value = this.getAttribute(name);
-        switch (name) {
-            case "id":
-                this.id = value;
-                this.getData();
-                break;
+        if (value != "null") {
+            switch (name) {
+                case "id":
+                    this.id = value;
+                    this.getData();
+                    break;
+            }
         }
     }
     getData() {
-        this.$loader.show();
         if (this.id !== null && this.type !== null) {
+            this.$loader.show();
             let $title = this.querySelector("#title");
             let $back = this.querySelector("#back-btn");
             $back.setAttribute("href", "#/resources/" + this.type);
@@ -42,9 +43,7 @@ export class ResourceItem extends HTMLElement {
                         const json = JSON.parse(xhr.response);
                         $title.innerHTML = json.name;
                         this.data = json;
-                        if (this.renderChild !== null) {
-                            this.renderChild();
-                        }
+                        this.render();
                         this.$loader.hide();
                         $back.className = "back-btn show";
                     } catch (e) {

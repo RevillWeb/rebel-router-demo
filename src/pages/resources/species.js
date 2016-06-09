@@ -6,32 +6,29 @@
  */
 import {ResourceItem} from "../resource-item.js";
 export class SpeciesResource extends ResourceItem {
-    attachedCallback() {
-        this.type = "species";
-        this.renderChild = () => {
-            this.$stats.innerHTML = SpeciesResource.renderTemplate(this.data);
-        };
+    createdCallback() {
+        this.init("species");
     }
-    static renderTemplate(data) {
-        return `
+    render() {
+        this.$stats.innerHTML = `
             <div class="stats-section">
                 <div class="section">
-                    <p><label><span class="icon icon-lips"></span></label> <span>${data.language}</span></p>
+                    <p><label><span class="icon icon-lips"></span></label> <span>${this.data.language}</span></p>
                 </div>
                 <div class="section">
-                    <p><label><span class="icon icon-calendar5"></span></label> ${data.average_lifespan}</p>
+                    <p><label><span class="icon icon-calendar5"></span></label> ${this.data.average_lifespan}</p>
                 </div>
             </div>
             <div class="stats-section">
                 <div class="section build">
-                    <p><label>Av. Height:</label> ${data.average_height}</p>
+                    <p><label>Av. Height:</label> ${this.data.average_height}</p>
                     <span class="icon icon-man"></span>
-                    <p><label>Classification:</label> ${data.classification}</p>
+                    <p><label>Classification:</label> ${this.data.classification}</p>
                 </div>
                 <div class="section">
-                    <p><label>Eye Colours:</label> ${data.eye_colors}</p>
-                    <p><label>Hair Colours:</label> ${data.hair_colors}</p>
-                    <p><label>Skin Colours:</label> ${data.skin_colors}</p>
+                    <p><label>Eye Colours:</label> ${this.data.eye_colors}</p>
+                    <p><label>Hair Colours:</label> ${this.data.hair_colors}</p>
+                    <p><label>Skin Colours:</label> ${this.data.skin_colors}</p>
                 </div>
             </div>`;
     }
