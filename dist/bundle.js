@@ -98,18 +98,20 @@
 
 	/**
 	 * Created by Leon Revill on 15/12/2015.
-	 * Blog: http://www.jsinsights.com
+	 * Blog: blog.revillweb.com
 	 * GitHub: https://github.com/RevillWeb
 	 * Twitter: @RevillWeb
 	 */
 
-	//Custom shim for Safari
-	if (typeof HTMLElement !== 'function') {
-	    var _HTMLElement = function _HTMLElement() {};
-	    _HTMLElement.prototype = HTMLElement.prototype;
-	    HTMLElement = _HTMLElement;
-	}
-
+	/**
+	 * Constructs a route object
+	 * @param templateName
+	 * @param route
+	 * @param regex
+	 * @param path
+	 * @returns {{}}
+	 * @private
+	 */
 	function _routeResult(templateName, route, regex, path) {
 	    var result = {};
 	    result.templateName = templateName;
@@ -119,8 +121,12 @@
 	    return result;
 	}
 
-	var RouterTemplate = function (_HTMLTemplateElement) {
-	    _inherits(RouterTemplate, _HTMLTemplateElement);
+	/**
+	 * Represents a router template which is used as the prototype for each RebelRouter element registered.
+	 */
+
+	var RouterTemplate = function (_HTMLElement) {
+	    _inherits(RouterTemplate, _HTMLElement);
 
 	    function RouterTemplate() {
 	        _classCallCheck(this, RouterTemplate);
@@ -130,6 +136,11 @@
 
 	    _createClass(RouterTemplate, [{
 	        key: "init",
+
+	        /**
+	         * Initialisation method with some basic configuration.
+	         * @param config
+	         */
 	        value: function init(config) {
 	            this.initialised = false;
 	            this.config = RebelRouter.mergeConfig({
@@ -137,6 +148,11 @@
 	                "animation": false
 	            }, config);
 	        }
+
+	        /**
+	         * Function used to initialise the animation mechanics if animation is turned on
+	         */
+
 	    }, {
 	        key: "initAnimation",
 	        value: function initAnimation() {
@@ -175,6 +191,11 @@
 	                observer.observe(this, { childList: true });
 	            }
 	        }
+
+	        /**
+	         * Executed when the element has been added to the DOM, renders the templates and sets up the path change listener
+	         */
+
 	    }, {
 	        key: "attachedCallback",
 	        value: function attachedCallback() {
@@ -203,6 +224,12 @@
 	                this.initialised = true;
 	            }
 	        }
+
+	        /**
+	         * Method used to get the current route object
+	         * @returns {*}
+	         */
+
 	    }, {
 	        key: "current",
 	        value: function current() {
@@ -219,6 +246,11 @@
 	            }
 	            return this.paths["*"] !== undefined ? _routeResult(this.paths["*"], "*", null, path) : null;
 	        }
+
+	        /**
+	         * Method called to render the current view
+	         */
+
 	    }, {
 	        key: "render",
 	        value: function render() {
@@ -245,6 +277,14 @@
 	                }
 	            }
 	        }
+
+	        /**
+	         * Method used to add new paths to the router
+	         * @param path - The route path
+	         * @param ViewClass - The web component representing the view assoicated to the path
+	         * @returns {RouterTemplate}
+	         */
+
 	    }, {
 	        key: "add",
 	        value: function add(path, ViewClass) {
@@ -263,11 +303,25 @@
 	            }
 	            return this;
 	        }
+
+	        /**
+	         * Short had way of adding a new default/fallback route
+	         * @param ViewClass
+	         * @returns {RouterTemplate}
+	         */
+
 	    }, {
 	        key: "setDefault",
 	        value: function setDefault(ViewClass) {
 	            return this.add("*", ViewClass);
 	        }
+
+	        /**
+	         *
+	         * @param node - Used with the animation mechanics to get all other view children except itself
+	         * @returns {Array}
+	         */
+
 	    }, {
 	        key: "getOtherChildren",
 	        value: function getOtherChildren(node) {
@@ -284,9 +338,21 @@
 	    }]);
 
 	    return RouterTemplate;
-	}(HTMLTemplateElement);
+	}(HTMLElement);
+
+	/**
+	 * The main router class and entry point to the router.
+	 */
+
 
 	var RebelRouter = exports.RebelRouter = function () {
+	    /**
+	     * Constructor for a new router.
+	     * @param name - The name of the router, must be a valid element name (e.g. main-router)
+	     * @param config - Configuration object for the router
+	     * @returns {*} - Returns the view instance
+	     */
+
 	    function RebelRouter(name, config) {
 	        _classCallCheck(this, RebelRouter);
 
@@ -306,6 +372,14 @@
 	        return RebelRouter.getView(name);
 	    }
 
+	    /**
+	     * Static helper method used to merge two configuration objects.
+	     * @param defaults
+	     * @param config
+	     * @returns {*}
+	     */
+
+
 	    _createClass(RebelRouter, null, [{
 	        key: "mergeConfig",
 	        value: function mergeConfig(defaults, config) {
@@ -321,6 +395,13 @@
 	            }
 	            return result;
 	        }
+
+	        /**
+	         * Static method to add a new view to the router.
+	         * @param name
+	         * @param classInstance
+	         */
+
 	    }, {
 	        key: "addView",
 	        value: function addView(name, classInstance) {
@@ -329,11 +410,25 @@
 	            }
 	            RebelRouter._views[name] = classInstance;
 	        }
+
+	        /**
+	         * Static method to get a view instance by name.
+	         * @param name
+	         * @returns {*}
+	         */
+
 	    }, {
 	        key: "getView",
 	        value: function getView(name) {
 	            return RebelRouter._views !== undefined ? RebelRouter._views[name] : undefined;
 	        }
+
+	        /**
+	         * Static helper method to parse the query string from a url into an object.
+	         * @param url
+	         * @returns {{}}
+	         */
+
 	    }, {
 	        key: "parseQueryString",
 	        value: function parseQueryString(url) {
@@ -360,6 +455,13 @@
 	            }
 	            return result;
 	        }
+
+	        /**
+	         * Static helper method to convert a class name to a valid element name.
+	         * @param Class
+	         * @returns {string}
+	         */
+
 	    }, {
 	        key: "classToTag",
 	        value: function classToTag(Class) {
@@ -369,11 +471,25 @@
 	            }
 	            return name;
 	        }
+
+	        /**
+	         * Static helper method used to determine if an element with the specified name has already been registered.
+	         * @param name
+	         * @returns {boolean}
+	         */
+
 	    }, {
 	        key: "isRegisteredElement",
 	        value: function isRegisteredElement(name) {
 	            return document.createElement(name).constructor !== HTMLElement;
 	        }
+
+	        /**
+	         * Static helper method to take a web component class, create an element name and register the new element on the document.
+	         * @param Class
+	         * @returns {string}
+	         */
+
 	    }, {
 	        key: "create",
 	        value: function create(Class) {
@@ -384,12 +500,25 @@
 	            }
 	            return name;
 	        }
+
+	        /**
+	         * Simple static helper method containing a regular expression to validate an element name
+	         * @param tag
+	         * @returns {boolean}
+	         */
+
 	    }, {
 	        key: "validElementTag",
 	        value: function validElementTag(tag) {
 	            return (/^[a-z0-9\-]+$/.test(tag)
 	            );
 	        }
+
+	        /**
+	         * Method used to register a callback to be called when the URL path changes.
+	         * @param callback
+	         */
+
 	    }, {
 	        key: "pathChange",
 	        value: function pathChange(callback) {
@@ -413,6 +542,15 @@
 	            window.onhashchange = changeHandler;
 	            window.onpopstate = changeHandler;
 	        }
+
+	        /**
+	         * Static helper method used to get the parameters from the provided route.
+	         * @param regex
+	         * @param route
+	         * @param path
+	         * @returns {{}}
+	         */
+
 	    }, {
 	        key: "getParamsFromUrl",
 	        value: function getParamsFromUrl(regex, route, path) {
@@ -431,6 +569,12 @@
 	            }
 	            return result;
 	        }
+
+	        /**
+	         * Static helper method used to get the path from the current URL.
+	         * @returns {*}
+	         */
+
 	    }, {
 	        key: "getPathFromUrl",
 	        value: function getPathFromUrl() {
@@ -444,8 +588,13 @@
 	    return RebelRouter;
 	}();
 
-	var RebelView = function (_HTMLTemplateElement2) {
-	    _inherits(RebelView, _HTMLTemplateElement2);
+	/**
+	 * Represents a view element used to embed a router in the DOM
+	 */
+
+
+	var RebelView = function (_HTMLElement2) {
+	    _inherits(RebelView, _HTMLElement2);
 
 	    function RebelView() {
 	        _classCallCheck(this, RebelView);
@@ -455,6 +604,10 @@
 
 	    _createClass(RebelView, [{
 	        key: "attachedCallback",
+
+	        /**
+	         * Called when the element is added to the DOM.
+	         */
 	        value: function attachedCallback() {
 	            //Get the name attribute from this element
 	            var name = this.getAttribute("name");
@@ -470,9 +623,13 @@
 	    }]);
 
 	    return RebelView;
-	}(HTMLTemplateElement);
+	}(HTMLElement);
 
 	document.registerElement("rebel-view", RebelView);
+
+	/**
+	 * Represents the prototype for an anchor element which added functionality to perform a back transition.
+	 */
 
 	var RebelBackA = function (_HTMLAnchorElement) {
 	    _inherits(RebelBackA, _HTMLAnchorElement);
@@ -762,25 +919,20 @@
 	    }
 
 	    _createClass(PeopleResource, [{
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            var _this2 = this;
-
-	            this.type = "people";
-	            this.renderChild = function () {
-	                _this2.$stats.innerHTML = PeopleResource.renderTemplate(_this2.data);
-	            };
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.init("people");
 	        }
-	    }], [{
-	        key: "renderTemplate",
-	        value: function renderTemplate(data) {
+	    }, {
+	        key: "render",
+	        value: function render() {
 	            var genderIcon = "transgender-alt";
-	            if (data.gender == "male") {
+	            if (this.data.gender == "male") {
 	                genderIcon = "male";
-	            } else if (data.gender == "female") {
+	            } else if (this.data.gender == "female") {
 	                genderIcon = "female";
 	            }
-	            return "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-" + genderIcon + "\"></span></label> <span>" + data.gender + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-calendar5\"></span></label> " + data.birth_year + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Height:</label> " + data.height + "</p>\n                    <span class=\"icon icon-man\"></span>\n                    <p><label>Mass:</label> " + data.mass + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Eye Colour:</label> " + data.eye_color + "</p>\n                    <p><label>Hair Colour:</label> " + data.hair_color + "</p>\n                    <p><label>Skin Colour:</label> " + data.skin_color + "</p>\n                </div>\n            </div>";
+	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-" + genderIcon + "\"></span></label> <span>" + this.data.gender + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-calendar5\"></span></label> " + this.data.birth_year + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Height:</label> " + this.data.height + "</p>\n                    <span class=\"icon icon-man\"></span>\n                    <p><label>Mass:</label> " + this.data.mass + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Eye Colour:</label> " + this.data.eye_color + "</p>\n                    <p><label>Hair Colour:</label> " + this.data.hair_color + "</p>\n                    <p><label>Skin Colour:</label> " + this.data.skin_color + "</p>\n                </div>\n            </div>";
 	        }
 	    }]);
 
@@ -822,12 +974,11 @@
 	    }
 
 	    _createClass(ResourceItem, [{
-	        key: 'createdCallback',
-	        value: function createdCallback() {
+	        key: 'init',
+	        value: function init(type) {
 	            this.baseUrl = "http://swapi.co/api/";
 	            this.id = null;
-	            this.type = null;
-	            this.renderChild = null;
+	            this.type = type;
 	            this.data = {};
 	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn" is="rebel-back-a"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
 	            this.$loader = this.querySelector('#loading');
@@ -837,11 +988,13 @@
 	        key: 'attributeChangedCallback',
 	        value: function attributeChangedCallback(name) {
 	            var value = this.getAttribute(name);
-	            switch (name) {
-	                case "id":
-	                    this.id = value;
-	                    this.getData();
-	                    break;
+	            if (value != "null") {
+	                switch (name) {
+	                    case "id":
+	                        this.id = value;
+	                        this.getData();
+	                        break;
+	                }
 	            }
 	        }
 	    }, {
@@ -849,11 +1002,11 @@
 	        value: function getData() {
 	            var _this2 = this;
 
-	            this.$loader.show();
 	            if (this.id !== null && this.type !== null) {
 	                var xhr;
 
 	                (function () {
+	                    _this2.$loader.show();
 	                    var $title = _this2.querySelector("#title");
 	                    var $back = _this2.querySelector("#back-btn");
 	                    $back.setAttribute("href", "#/resources/" + _this2.type);
@@ -865,9 +1018,7 @@
 	                                var json = JSON.parse(xhr.response);
 	                                $title.innerHTML = json.name;
 	                                _this2.data = json;
-	                                if (_this2.renderChild !== null) {
-	                                    _this2.renderChild();
-	                                }
+	                                _this2.render();
 	                                _this2.$loader.hide();
 	                                $back.className = "back-btn show";
 	                            } catch (e) {
@@ -922,19 +1073,14 @@
 	    }
 
 	    _createClass(StarshipsResource, [{
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            var _this2 = this;
-
-	            this.type = "starships";
-	            this.renderChild = function () {
-	                _this2.$stats.innerHTML = StarshipsResource.renderTemplate(_this2.data);
-	            };
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.init("starships");
 	        }
-	    }], [{
-	        key: "renderTemplate",
-	        value: function renderTemplate(data) {
-	            return "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-coins\"></span></label> <span>" + data.cost_in_credits + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-shield4\"></span></label> " + data.starship_class + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Length:</label> " + data.length + "</p>\n                    <span class=\"icon icon-rocket\"></span>\n                    <p><label>Cargo Capacity:</label> " + data.cargo_capacity + "</p>\n                    <p><label>Passengers:</label> " + data.passengers + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Model:</label> " + data.model + "</p>\n                    <p><label>Crew:</label> " + data.crew + "</p>\n                    <p><label>Hyperdrive Rating:</label> " + data.hyperdrive_rating + "</p>\n                    <p><label>Manufacturer:</label> <br />" + data.manufacturer + "</p>\n                </div>\n            </div>";
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-coins\"></span></label> <span>" + this.data.cost_in_credits + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-shield4\"></span></label> " + this.data.starship_class + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Length:</label> " + this.data.length + "</p>\n                    <span class=\"icon icon-rocket\"></span>\n                    <p><label>Cargo Capacity:</label> " + this.data.cargo_capacity + "</p>\n                    <p><label>Passengers:</label> " + this.data.passengers + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Model:</label> " + this.data.model + "</p>\n                    <p><label>Crew:</label> " + this.data.crew + "</p>\n                    <p><label>Hyperdrive Rating:</label> " + this.data.hyperdrive_rating + "</p>\n                    <p><label>Manufacturer:</label> <br />" + this.data.manufacturer + "</p>\n                </div>\n            </div>";
 	        }
 	    }]);
 
@@ -978,19 +1124,14 @@
 	    }
 
 	    _createClass(VehiclesResource, [{
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            var _this2 = this;
-
-	            this.type = "vehicles";
-	            this.renderChild = function () {
-	                _this2.$stats.innerHTML = VehiclesResource.renderTemplate(_this2.data);
-	            };
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.init("vehicles");
 	        }
-	    }], [{
-	        key: "renderTemplate",
-	        value: function renderTemplate(data) {
-	            return "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-coins\"></span></label> <span>" + data.cost_in_credits + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-shield4\"></span></label> " + data.vehicle_class + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Length:</label> " + data.length + "</p>\n                    <span class=\"icon icon-truck\"></span>\n                    <p><label>Cargo Capacity:</label> " + data.cargo_capacity + "</p>\n                    <p><label>Passengers:</label> " + data.passengers + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Model:</label> " + data.model + "</p>\n                    <p><label>Crew:</label> " + data.crew + "</p>\n                    <p><label>Manufacturer:</label> <br />" + data.manufacturer + "</p>\n                </div>\n            </div>";
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-coins\"></span></label> <span>" + this.data.cost_in_credits + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-shield4\"></span></label> {$this.data.vehicle_class}</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Length:</label> " + this.data.length + "</p>\n                    <span class=\"icon icon-truck\"></span>\n                    <p><label>Cargo Capacity:</label> " + this.data.cargo_capacity + "</p>\n                    <p><label>Passengers:</label> " + this.data.passengers + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Model:</label> " + this.data.model + "</p>\n                    <p><label>Crew:</label> " + this.data.crew + "</p>\n                    <p><label>Manufacturer:</label> <br />" + this.data.manufacturer + "</p>\n                </div>\n            </div>";
 	        }
 	    }]);
 
@@ -1034,19 +1175,14 @@
 	    }
 
 	    _createClass(SpeciesResource, [{
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            var _this2 = this;
-
-	            this.type = "species";
-	            this.renderChild = function () {
-	                _this2.$stats.innerHTML = SpeciesResource.renderTemplate(_this2.data);
-	            };
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.init("species");
 	        }
-	    }], [{
-	        key: "renderTemplate",
-	        value: function renderTemplate(data) {
-	            return "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-lips\"></span></label> <span>" + data.language + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-calendar5\"></span></label> " + data.average_lifespan + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Av. Height:</label> " + data.average_height + "</p>\n                    <span class=\"icon icon-man\"></span>\n                    <p><label>Classification:</label> " + data.classification + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Eye Colours:</label> " + data.eye_colors + "</p>\n                    <p><label>Hair Colours:</label> " + data.hair_colors + "</p>\n                    <p><label>Skin Colours:</label> " + data.skin_colors + "</p>\n                </div>\n            </div>";
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-lips\"></span></label> <span>" + this.data.language + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-calendar5\"></span></label> " + this.data.average_lifespan + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Av. Height:</label> " + this.data.average_height + "</p>\n                    <span class=\"icon icon-man\"></span>\n                    <p><label>Classification:</label> " + this.data.classification + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Eye Colours:</label> " + this.data.eye_colors + "</p>\n                    <p><label>Hair Colours:</label> " + this.data.hair_colors + "</p>\n                    <p><label>Skin Colours:</label> " + this.data.skin_colors + "</p>\n                </div>\n            </div>";
 	        }
 	    }]);
 
@@ -1090,19 +1226,14 @@
 	    }
 
 	    _createClass(PlanetsResource, [{
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            var _this2 = this;
-
-	            this.type = "planets";
-	            this.renderChild = function () {
-	                _this2.$stats.innerHTML = PlanetsResource.renderTemplate(_this2.data);
-	            };
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            this.init("planets");
 	        }
-	    }], [{
-	        key: "renderTemplate",
-	        value: function renderTemplate(data) {
-	            return "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-arrow-down16\"></span></label> <span>" + data.gravity + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-tree\"></span></label> " + data.terrain + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Diameter:</label> " + data.diameter + "</p>\n                    <span class=\"icon icon-planet2\"></span>\n                    <p><label>Climate:</label> " + data.climate + "</p>\n\n                </div>\n                <div class=\"section\">\n                <p><label>Population:</label> " + data.population + "</p>\n                    <p><label>Surface Water:</label> " + data.surface_water + "</p>\n                    <p><label>Orbital Period:</label> " + data.orbital_period + "</p>\n                    <p><label>Rotation Period:</label> " + data.rotation_period + "</p>\n                </div>\n            </div>";
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-arrow-down16\"></span></label> <span>" + this.data.gravity + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-tree\"></span></label> " + this.data.terrain + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Diameter:</label> " + this.data.diameter + "</p>\n                    <span class=\"icon icon-planet2\"></span>\n                    <p><label>Climate:</label> " + this.data.climate + "</p>\n\n                </div>\n                <div class=\"section\">\n                <p><label>Population:</label> " + this.data.population + "</p>\n                    <p><label>Surface Water:</label> " + this.data.surface_water + "</p>\n                    <p><label>Orbital Period:</label> " + this.data.orbital_period + "</p>\n                    <p><label>Rotation Period:</label> " + this.data.rotation_period + "</p>\n                </div>\n            </div>";
 	        }
 	    }]);
 
