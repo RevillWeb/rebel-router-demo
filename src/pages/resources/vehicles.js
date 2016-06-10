@@ -16,7 +16,7 @@ export class VehiclesResource extends ResourceItem {
                     <p><label><span class="icon icon-coins"></span></label> <span>${this.data.cost_in_credits}</span></p>
                 </div>
                 <div class="section">
-                    <p><label><span class="icon icon-shield4"></span></label> {$this.data.vehicle_class}</p>
+                    <p><label><span class="icon icon-shield4"></span></label> ${this.data.vehicle_class}</p>
                 </div>
             </div>
             <div class="stats-section">

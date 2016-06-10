@@ -17,7 +17,7 @@ import {RebelRepeater} from '../node_modules/rebel-repeater/lib/rebel-repeater.j
 import {RebelLoading} from './../node_modules/rebel-loading/lib/rebel-loading.js';
 
 //Configure the main app router with the main resource list page and the info page.
-let MainRouter = new RebelRouter("main-view", {animation: true});
+let MainRouter = new RebelRouter("main-router", {animation: true});
 MainRouter
     .add("/info", InfoPage)
     .add("/resources/{resource}", ResourcesList)
