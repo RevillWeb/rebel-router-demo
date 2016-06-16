@@ -130,11 +130,10 @@
 	        key: "create",
 
 	        /**
-	         * Constructor for a new router.
+	         * Create a new router instance.
 	         * @param name - The name of the router, must be a valid element name (e.g. main-router)
 	         * @param routes - The object containing all the routes for the router
 	         * @param options - Options object for the router
-	         * @returns {*} - Returns the view instance
 	         */
 	        value: function create(name, routes, options) {
 
@@ -942,17 +941,21 @@
 	            this.innerHTML = '\n            <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>\n            <a href="#" id="back-btn" is="rebel-back-a"><span class="icon icon-arrow-left2"></span> Back</a>\n            <h1 id="title"></h1>\n            <div id="stats"></div>\n        ';
 	            this.$loader = this.querySelector('#loading');
 	            this.$stats = this.querySelector('#stats');
+	            this.initialised = true;
 	        }
 	    }, {
 	        key: 'attributeChangedCallback',
 	        value: function attributeChangedCallback(name) {
-	            var value = this.getAttribute(name);
-	            if (value != "null") {
-	                switch (name) {
-	                    case "id":
-	                        this.id = value;
-	                        this.getData();
-	                        break;
+	            //This fires too early in IE11 - so just check to make sure we have initialised.
+	            if (this.initialised === true) {
+	                var value = this.getAttribute(name);
+	                if (value != "null") {
+	                    switch (name) {
+	                        case "id":
+	                            this.id = value;
+	                            this.getData();
+	                            break;
+	                    }
 	                }
 	            }
 	        }
