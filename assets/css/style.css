@@ -71,7 +71,6 @@ a:hover, a:active {
     background: #1c1c1c;
 }
 #main-container {
-    flex: 1;
     height: 558px;
     background-color: rgba(34, 34, 34, 0.50);
     position: relative;
