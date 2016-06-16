@@ -69,14 +69,28 @@
 	var _rebelLoading = __webpack_require__(12);
 
 	//Configure the main app router with the main resource list page and the info page.
-	var MainRouter = new _rebelRouter.RebelRouter("main-view", { animation: true }); /**
-	                                                                                  * Created by Leon Revill on 03/03/16.
-	                                                                                  * Blog: http://www.revilweb.com
-	                                                                                  * GitHub: https://github.com/RevillWeb
-	                                                                                  * Twitter: @RevillWeb
-	                                                                                  */
+	var routes = {
+	    "/info": _info.InfoPage,
+	    "/resources/{resource}": _resourceList.ResourcesList,
+	    "/resource/people/{id}": _people.PeopleResource,
+	    "/resource/starships/{id}": _starships.StarshipsResource,
+	    "/resource/vehicles/{id}": _vehicles.VehiclesResource,
+	    "/resource/species/{id}": _species.SpeciesResource,
+	    "/resource/planets/{id}": _planets.PlanetsResource,
+	    "default": _home.HomePage
+	}; /**
+	    * Created by Leon Revill on 03/03/16.
+	    * Blog: http://www.revilweb.com
+	    * GitHub: https://github.com/RevillWeb
+	    * Twitter: @RevillWeb
+	    */
 
-	MainRouter.add("/info", _info.InfoPage).add("/resources/{resource}", _resourceList.ResourcesList).add("/resource/people/{id}", _people.PeopleResource).add("/resource/starships/{id}", _starships.StarshipsResource).add("/resource/vehicles/{id}", _vehicles.VehiclesResource).add("/resource/species/{id}", _species.SpeciesResource).add("/resource/planets/{id}", _planets.PlanetsResource).setDefault(_home.HomePage);
+
+	var options = {
+	    animation: true
+	};
+
+	_rebelRouter.RebelRouter.create("main", routes, options);
 
 /***/ },
 /* 1 */
@@ -90,11 +104,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	/**
 	 * Created by Leon Revill on 15/12/2015.
@@ -104,294 +118,69 @@
 	 */
 
 	/**
-	 * Constructs a route object
-	 * @param templateName
-	 * @param route
-	 * @param regex
-	 * @param path
-	 * @returns {{}}
-	 * @private
-	 */
-	function _routeResult(templateName, route, regex, path) {
-	    var result = {};
-	    result.templateName = templateName;
-	    result.route = route;
-	    result.path = path;
-	    result.params = RebelRouter.getParamsFromUrl(regex, route, path);
-	    return result;
-	}
-
-	/**
-	 * Represents a router template which is used as the prototype for each RebelRouter element registered.
+	 * The main router class and entry point to the router.
 	 */
 
-	var RouterTemplate = function (_HTMLElement) {
-	    _inherits(RouterTemplate, _HTMLElement);
-
-	    function RouterTemplate() {
-	        _classCallCheck(this, RouterTemplate);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RouterTemplate).apply(this, arguments));
+	var RebelRouter = exports.RebelRouter = function () {
+	    function RebelRouter() {
+	        _classCallCheck(this, RebelRouter);
 	    }
 
-	    _createClass(RouterTemplate, [{
-	        key: "init",
+	    _createClass(RebelRouter, null, [{
+	        key: "create",
 
 	        /**
-	         * Initialisation method with some basic configuration.
-	         * @param config
+	         * Constructor for a new router.
+	         * @param name - The name of the router, must be a valid element name (e.g. main-router)
+	         * @param routes - The object containing all the routes for the router
+	         * @param options - Options object for the router
+	         * @returns {*} - Returns the view instance
 	         */
-	        value: function init(config) {
-	            this.initialised = false;
-	            this.config = RebelRouter.mergeConfig({
-	                "shadowRoot": false,
-	                "animation": false
-	            }, config);
-	        }
+	        value: function create(name, routes, options) {
 
-	        /**
-	         * Function used to initialise the animation mechanics if animation is turned on
-	         */
-
-	    }, {
-	        key: "initAnimation",
-	        value: function initAnimation() {
-	            var _this2 = this;
-
-	            if (this.config.animation === true) {
-	                var observer = new MutationObserver(function (mutations) {
-	                    var node = mutations[0].addedNodes[0];
-	                    if (node !== undefined) {
-	                        (function () {
-	                            var otherChildren = _this2.getOtherChildren(node);
-	                            node.className += " rebel-animate enter";
-	                            setTimeout(function () {
-	                                if (otherChildren.length > 0) {
-	                                    otherChildren.forEach(function (child) {
-	                                        child.className += " exit";
-	                                        setTimeout(function () {
-	                                            child.className += " complete";
-	                                        }, 10);
-	                                    });
-	                                }
-	                                setTimeout(function () {
-	                                    node.className += " complete";
-	                                }, 10);
-	                            }, 10);
-	                            var animationEnd = function animationEnd(event) {
-	                                if (event.target.className.indexOf("exit") > -1) {
-	                                    _this2.root.removeChild(event.target);
-	                                }
-	                            };
-	                            node.addEventListener("transitionend", animationEnd);
-	                            node.addEventListener("animationend", animationEnd);
-	                        })();
-	                    }
-	                });
-	                observer.observe(this, { childList: true });
+	            if (RebelRouter.getInstance(name) !== undefined) {
+	                throw new Error("Instance name has already been used.");
 	            }
-	        }
 
-	        /**
-	         * Executed when the element has been added to the DOM, renders the templates and sets up the path change listener
-	         */
+	            if (Object.keys(routes).length === 0) {
+	                throw new Error("At least one route must be specified.");
+	            }
 
-	    }, {
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
-	            var _this3 = this;
+	            var instance = {
+	                name: name,
+	                options: options,
+	                paths: {}
+	            };
 
-	            if (this.initialised === false) {
-	                if (this.config.shadowRoot === true) {
-	                    this.createShadowRoot();
-	                    this.root = this.shadowRoot;
-	                } else {
-	                    this.root = this;
+	            for (var route in routes) {
+	                if (routes.hasOwnProperty(route)) {
+	                    var elementName = RebelRouter.createElement(routes[route]);
+	                    var path = route === "default" ? "*" : route;
+	                    instance.paths[path] = elementName;
 	                }
-	                this.initAnimation();
-	                this.render();
-	                RebelRouter.pathChange(function (isBack) {
-	                    if (_this3.config.animation === true) {
-	                        if (isBack === true) {
-	                            _this3.className = _this3.className.replace(" rbl-back", "");
-	                            _this3.className += " rbl-back";
-	                        } else {
-	                            _this3.className = _this3.className.replace(" rbl-back", "");
-	                        }
-	                    }
-	                    _this3.render();
-	                });
-	                this.initialised = true;
 	            }
+	            RebelRouter.addInstance(name, instance);
 	        }
 
 	        /**
-	         * Method used to get the current route object
+	         * Static helper method used to merge two option objects.
+	         * @param defaults
+	         * @param options
 	         * @returns {*}
 	         */
 
 	    }, {
-	        key: "current",
-	        value: function current() {
-	            var path = RebelRouter.getPathFromUrl();
-	            for (var route in this.paths) {
-	                if (route !== "*") {
-	                    var regexString = "^" + route.replace(/{\w+}\/?/g, "(\\w+)\/?");
-	                    regexString += regexString.indexOf("\\/?") > -1 ? "" : "\\/?" + "([?=&-\/\\w+]+)?$";
-	                    var regex = new RegExp(regexString);
-	                    if (regex.test(path)) {
-	                        return _routeResult(this.paths[route], route, regex, path);
-	                    }
-	                }
-	            }
-	            return this.paths["*"] !== undefined ? _routeResult(this.paths["*"], "*", null, path) : null;
-	        }
-
-	        /**
-	         * Method called to render the current view
-	         */
-
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            var result = this.current();
-	            if (result !== null) {
-	                if (result.templateName !== this.previousTemplate || this.config.animation === true) {
-	                    this.$template = document.createElement(result.templateName);
-	                    if (this.config.animation !== true) {
-	                        this.root.innerHTML = "";
-	                    }
-	                    this.root.appendChild(this.$template);
-	                    this.previousTemplate = result.templateName;
-	                }
-	                for (var key in result.params) {
-	                    var value = result.params[key];
-	                    if (typeof value == "Object") {
-	                        try {
-	                            value = JSON.parse(value);
-	                        } catch (e) {
-	                            console.error("Couldn't parse param value:", e);
-	                        }
-	                    }
-	                    this.$template.setAttribute(key, value);
-	                }
-	            }
-	        }
-
-	        /**
-	         * Method used to add new paths to the router
-	         * @param path - The route path
-	         * @param ViewClass - The web component representing the view assoicated to the path
-	         * @returns {RouterTemplate}
-	         */
-
-	    }, {
-	        key: "add",
-	        value: function add(path, ViewClass) {
-	            var _this4 = this;
-
-	            if (this.paths === undefined) {
-	                this.paths = {};
-	            }
-	            var name = RebelRouter.create(ViewClass);
-	            if (Array.isArray(path)) {
-	                path.forEach(function (item) {
-	                    _this4.paths[item] = name;
-	                });
-	            } else {
-	                this.paths[path] = name;
-	            }
-	            return this;
-	        }
-
-	        /**
-	         * Short had way of adding a new default/fallback route
-	         * @param ViewClass
-	         * @returns {RouterTemplate}
-	         */
-
-	    }, {
-	        key: "setDefault",
-	        value: function setDefault(ViewClass) {
-	            return this.add("*", ViewClass);
-	        }
-
-	        /**
-	         *
-	         * @param node - Used with the animation mechanics to get all other view children except itself
-	         * @returns {Array}
-	         */
-
-	    }, {
-	        key: "getOtherChildren",
-	        value: function getOtherChildren(node) {
-	            var children = this.root.children;
-	            var results = [];
-	            for (var i = 0; i < children.length; i++) {
-	                var child = children[i];
-	                if (child != node) {
-	                    results.push(child);
-	                }
-	            }
-	            return results;
-	        }
-	    }]);
-
-	    return RouterTemplate;
-	}(HTMLElement);
-
-	/**
-	 * The main router class and entry point to the router.
-	 */
-
-
-	var RebelRouter = exports.RebelRouter = function () {
-	    /**
-	     * Constructor for a new router.
-	     * @param name - The name of the router, must be a valid element name (e.g. main-router)
-	     * @param config - Configuration object for the router
-	     * @returns {*} - Returns the view instance
-	     */
-
-	    function RebelRouter(name, config) {
-	        _classCallCheck(this, RebelRouter);
-
-	        this.stack = [];
-	        this.template = null;
-	        if (RebelRouter.validElementTag(name) === false) {
-	            throw new Error("Invalid tag name provided.");
-	        }
-	        if (RebelRouter.isRegisteredElement(name) === false) {
-	            var tag = document.registerElement(name, {
-	                prototype: Object.create(RouterTemplate.prototype)
-	            });
-	            var instance = new tag();
-	            instance.init(config);
-	            RebelRouter.addView(name, instance);
-	        }
-	        return RebelRouter.getView(name);
-	    }
-
-	    /**
-	     * Static helper method used to merge two configuration objects.
-	     * @param defaults
-	     * @param config
-	     * @returns {*}
-	     */
-
-
-	    _createClass(RebelRouter, null, [{
-	        key: "mergeConfig",
-	        value: function mergeConfig(defaults, config) {
-	            if (config === undefined) {
+	        key: "mergeOptions",
+	        value: function mergeOptions(defaults, options) {
+	            if (options === undefined) {
 	                return defaults;
 	            }
 	            var result = {};
 	            for (var attrName in defaults) {
 	                result[attrName] = defaults[attrName];
 	            }
-	            for (var attrName in config) {
-	                result[attrName] = config[attrName];
+	            for (var attrName in options) {
+	                result[attrName] = options[attrName];
 	            }
 	            return result;
 	        }
@@ -399,16 +188,16 @@
 	        /**
 	         * Static method to add a new view to the router.
 	         * @param name
-	         * @param classInstance
+	         * @param instance
 	         */
 
 	    }, {
-	        key: "addView",
-	        value: function addView(name, classInstance) {
-	            if (RebelRouter._views === undefined) {
-	                RebelRouter._views = {};
+	        key: "addInstance",
+	        value: function addInstance(name, instance) {
+	            if (RebelRouter._instances === undefined) {
+	                RebelRouter._instances = {};
 	            }
-	            RebelRouter._views[name] = classInstance;
+	            RebelRouter._instances[name] = instance;
 	        }
 
 	        /**
@@ -418,9 +207,9 @@
 	         */
 
 	    }, {
-	        key: "getView",
-	        value: function getView(name) {
-	            return RebelRouter._views !== undefined ? RebelRouter._views[name] : undefined;
+	        key: "getInstance",
+	        value: function getInstance(name) {
+	            return RebelRouter._instances !== undefined ? RebelRouter._instances[name] : undefined;
 	        }
 
 	        /**
@@ -465,7 +254,14 @@
 	    }, {
 	        key: "classToTag",
 	        value: function classToTag(Class) {
-	            var name = Class.name.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z0-9])/g, '$1-$2').toLowerCase();
+	            /**
+	             * Class.name would be better but this isn't supported in IE 11.
+	             */
+	            try {
+	                var name = Class.toString().match(/^function\s*([^\s(]+)/)[1].replace(/\W+/g, '-').replace(/([a-z\d])([A-Z0-9])/g, '$1-$2').toLowerCase();
+	            } catch (e) {
+	                throw new Error("Couldn't parse class name:", e);
+	            }
 	            if (RebelRouter.validElementTag(name) === false) {
 	                throw new Error("Class name couldn't be translated to tag.");
 	            }
@@ -491,8 +287,8 @@
 	         */
 
 	    }, {
-	        key: "create",
-	        value: function create(Class) {
+	        key: "createElement",
+	        value: function createElement(Class) {
 	            var name = RebelRouter.classToTag(Class);
 	            if (RebelRouter.isRegisteredElement(name) === false) {
 	                Class.prototype.name = name;
@@ -526,13 +322,17 @@
 	                RebelRouter.changeCallbacks = [];
 	            }
 	            RebelRouter.changeCallbacks.push(callback);
-	            var changeHandler = function changeHandler(event) {
-	                if (event.oldURL !== undefined && event.newURL != event.oldURL) {
+	            var changeHandler = function changeHandler() {
+	                /**
+	                 *  event.oldURL and event.newURL would be better here but this doesn't work in IE :(
+	                 */
+	                if (window.location.href != RebelRouter.oldURL) {
 	                    RebelRouter.changeCallbacks.forEach(function (callback) {
 	                        callback(RebelRouter.isBack);
 	                    });
 	                    RebelRouter.isBack = false;
 	                }
+	                RebelRouter.oldURL = window.location.href;
 	            };
 	            if (window.onhashchange === null) {
 	                window.addEventListener("rblback", function () {
@@ -540,7 +340,6 @@
 	                });
 	            }
 	            window.onhashchange = changeHandler;
-	            window.onpopstate = changeHandler;
 	        }
 
 	        /**
@@ -589,43 +388,181 @@
 	}();
 
 	/**
-	 * Represents a view element used to embed a router in the DOM
+	 * Represents a router instance which is used as the prototype for each RebelRouter element registered.
 	 */
 
 
-	var RebelView = function (_HTMLElement2) {
-	    _inherits(RebelView, _HTMLElement2);
+	var RouterInstance = function (_HTMLElement) {
+	    _inherits(RouterInstance, _HTMLElement);
 
-	    function RebelView() {
-	        _classCallCheck(this, RebelView);
+	    function RouterInstance() {
+	        _classCallCheck(this, RouterInstance);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelView).apply(this, arguments));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RouterInstance).apply(this, arguments));
 	    }
 
-	    _createClass(RebelView, [{
-	        key: "attachedCallback",
+	    _createClass(RouterInstance, [{
+	        key: "createdCallback",
+	        value: function createdCallback() {
+	            var _this2 = this;
+
+	            this.name = this.getAttribute("instance");
+	            var instance = RebelRouter.getInstance(this.name);
+	            if (instance === undefined) {
+	                throw new Error("Invalid instance name specified.");
+	            }
+	            this.initialised = false;
+	            this.paths = instance.paths;
+	            this.options = RebelRouter.mergeOptions({
+	                "shadowRoot": false,
+	                "animation": false
+	            }, instance.options);
+
+	            if (this.initialised === false) {
+	                if (this.options.shadowRoot === true) {
+	                    this.createShadowRoot();
+	                    this.root = this.shadowRoot;
+	                } else {
+	                    this.root = this;
+	                }
+	                if (this.options.animation === true) {
+	                    this.initAnimation();
+	                }
+	                this.render();
+	                RebelRouter.pathChange(function (isBack) {
+	                    if (_this2.options.animation === true) {
+	                        if (isBack === true) {
+	                            _this2.classList.add("rbl-back");
+	                        } else {
+	                            _this2.classList.remove("rbl-back");
+	                        }
+	                    }
+	                    _this2.render();
+	                });
+	                this.initialised = true;
+	            }
+	        }
 
 	        /**
-	         * Called when the element is added to the DOM.
+	         * Function used to initialise the animation mechanics if animation is turned on
 	         */
-	        value: function attachedCallback() {
-	            //Get the name attribute from this element
-	            var name = this.getAttribute("name");
-	            //If its not undefined then attempt to find a router instance with a matching name
-	            if (name !== undefined) {
-	                var instance = RebelRouter.getView(name);
-	                //If an instance exists with that name append it to this element
-	                if (instance !== undefined) {
-	                    this.appendChild(instance);
+
+	    }, {
+	        key: "initAnimation",
+	        value: function initAnimation() {
+	            var _this3 = this;
+
+	            var observer = new MutationObserver(function (mutations) {
+	                var node = mutations[0].addedNodes[0];
+	                if (node !== undefined) {
+	                    (function () {
+	                        var otherChildren = _this3.getOtherChildren(node);
+	                        node.classList.add("rebel-animate");
+	                        node.classList.add("enter");
+	                        setTimeout(function () {
+	                            if (otherChildren.length > 0) {
+	                                otherChildren.forEach(function (child) {
+	                                    child.classList.add("exit");
+	                                    setTimeout(function () {
+	                                        child.classList.add("complete");
+	                                    }, 10);
+	                                });
+	                            }
+	                            setTimeout(function () {
+	                                node.classList.add("complete");
+	                            }, 10);
+	                        }, 10);
+	                        var animationEnd = function animationEnd(event) {
+	                            if (event.target.className.indexOf("exit") > -1) {
+	                                _this3.root.removeChild(event.target);
+	                            }
+	                        };
+	                        node.addEventListener("transitionend", animationEnd);
+	                        node.addEventListener("animationend", animationEnd);
+	                    })();
+	                }
+	            });
+	            observer.observe(this, { childList: true });
+	        }
+
+	        /**
+	         * Method used to get the current route object
+	         * @returns {*}
+	         */
+
+	    }, {
+	        key: "current",
+	        value: function current() {
+	            var path = RebelRouter.getPathFromUrl();
+	            for (var route in this.paths) {
+	                if (route !== "*") {
+	                    var regexString = "^" + route.replace(/{\w+}\/?/g, "(\\w+)\/?");
+	                    regexString += regexString.indexOf("\\/?") > -1 ? "" : "\\/?" + "([?=&-\/\\w+]+)?$";
+	                    var regex = new RegExp(regexString);
+	                    if (regex.test(path)) {
+	                        return _routeResult(this.paths[route], route, regex, path);
+	                    }
+	                }
+	            }
+	            return this.paths["*"] !== undefined ? _routeResult(this.paths["*"], "*", null, path) : null;
+	        }
+
+	        /**
+	         * Method called to render the current view
+	         */
+
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            var result = this.current();
+	            if (result !== null) {
+	                if (result.templateName !== this.previousTemplate || this.options.animation === true) {
+	                    this.$template = document.createElement(result.templateName);
+	                    if (this.options.animation !== true) {
+	                        this.root.innerHTML = "";
+	                    }
+	                    this.root.appendChild(this.$template);
+	                    this.previousTemplate = result.templateName;
+	                }
+	                for (var key in result.params) {
+	                    var value = result.params[key];
+	                    if (typeof value == "Object") {
+	                        try {
+	                            value = JSON.parse(value);
+	                        } catch (e) {
+	                            console.error("Couldn't parse param value:", e);
+	                        }
+	                    }
+	                    this.$template.setAttribute(key, value);
 	                }
 	            }
 	        }
+
+	        /**
+	         *
+	         * @param node - Used with the animation mechanics to get all other view children except itself
+	         * @returns {Array}
+	         */
+
+	    }, {
+	        key: "getOtherChildren",
+	        value: function getOtherChildren(node) {
+	            var children = this.root.children;
+	            var results = [];
+	            for (var i = 0; i < children.length; i++) {
+	                var child = children[i];
+	                if (child != node) {
+	                    results.push(child);
+	                }
+	            }
+	            return results;
+	        }
 	    }]);
 
-	    return RebelView;
+	    return RouterInstance;
 	}(HTMLElement);
 
-	document.registerElement("rebel-view", RebelView);
+	document.registerElement("rebel-router", RouterInstance);
 
 	/**
 	 * Represents the prototype for an anchor element which added functionality to perform a back transition.
@@ -643,10 +580,10 @@
 	    _createClass(RebelBackA, [{
 	        key: "attachedCallback",
 	        value: function attachedCallback() {
-	            var _this7 = this;
+	            var _this5 = this;
 
 	            this.addEventListener("click", function (event) {
-	                var path = _this7.getAttribute("href");
+	                var path = _this5.getAttribute("href");
 	                event.preventDefault();
 	                if (path !== undefined) {
 	                    window.dispatchEvent(new CustomEvent('rblback'));
@@ -658,11 +595,33 @@
 
 	    return RebelBackA;
 	}(HTMLAnchorElement);
+	/**
+	 * Register the back button custom element
+	 */
+
 
 	document.registerElement("rebel-back-a", {
 	    extends: "a",
 	    prototype: RebelBackA.prototype
 	});
+
+	/**
+	 * Constructs a route object
+	 * @param templateName
+	 * @param route
+	 * @param regex
+	 * @param path
+	 * @returns {{}}
+	 * @private
+	 */
+	function _routeResult(templateName, route, regex, path) {
+	    var result = {};
+	    result.templateName = templateName;
+	    result.route = route;
+	    result.path = path;
+	    result.params = RebelRouter.getParamsFromUrl(regex, route, path);
+	    return result;
+	}
 
 /***/ },
 /* 2 */
@@ -1131,7 +1090,7 @@
 	    }, {
 	        key: "render",
 	        value: function render() {
-	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-coins\"></span></label> <span>" + this.data.cost_in_credits + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-shield4\"></span></label> {$this.data.vehicle_class}</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Length:</label> " + this.data.length + "</p>\n                    <span class=\"icon icon-truck\"></span>\n                    <p><label>Cargo Capacity:</label> " + this.data.cargo_capacity + "</p>\n                    <p><label>Passengers:</label> " + this.data.passengers + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Model:</label> " + this.data.model + "</p>\n                    <p><label>Crew:</label> " + this.data.crew + "</p>\n                    <p><label>Manufacturer:</label> <br />" + this.data.manufacturer + "</p>\n                </div>\n            </div>";
+	            this.$stats.innerHTML = "\n            <div class=\"stats-section\">\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-coins\"></span></label> <span>" + this.data.cost_in_credits + "</span></p>\n                </div>\n                <div class=\"section\">\n                    <p><label><span class=\"icon icon-shield4\"></span></label> " + this.data.vehicle_class + "</p>\n                </div>\n            </div>\n            <div class=\"stats-section\">\n                <div class=\"section build\">\n                    <p><label>Length:</label> " + this.data.length + "</p>\n                    <span class=\"icon icon-truck\"></span>\n                    <p><label>Cargo Capacity:</label> " + this.data.cargo_capacity + "</p>\n                    <p><label>Passengers:</label> " + this.data.passengers + "</p>\n                </div>\n                <div class=\"section\">\n                    <p><label>Model:</label> " + this.data.model + "</p>\n                    <p><label>Crew:</label> " + this.data.crew + "</p>\n                    <p><label>Manufacturer:</label> <br />" + this.data.manufacturer + "</p>\n                </div>\n            </div>";
 	        }
 	    }]);
 
