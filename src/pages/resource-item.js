@@ -18,15 +18,19 @@ export class ResourceItem extends HTMLElement {
         `;
         this.$loader = this.querySelector('#loading');
         this.$stats = this.querySelector('#stats');
+        this.initialised = true;
     }
     attributeChangedCallback(name) {
-        const value = this.getAttribute(name);
-        if (value != "null") {
-            switch (name) {
-                case "id":
-                    this.id = value;
-                    this.getData();
-                    break;
+        //This fires too early in IE11 - so just check to make sure we have initialised.
+        if (this.initialised === true) {
+            const value = this.getAttribute(name);
+            if (value != "null") {
+                switch (name) {
+                    case "id":
+                        this.id = value;
+                        this.getData();
+                        break;
+                }
             }
         }
     }
