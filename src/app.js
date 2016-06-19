@@ -17,19 +17,19 @@ import {RebelRepeater} from '../node_modules/rebel-repeater/lib/rebel-repeater.j
 import {RebelLoading} from './../node_modules/rebel-loading/lib/rebel-loading.js';
 
 //Configure the main app router with the main resource list page and the info page.
-const routes = {
-    "/info": InfoPage,
-    "/resources/{resource}": ResourcesList,
-    "/resource/people/{id}": PeopleResource,
-    "/resource/starships/{id}": StarshipsResource,
-    "/resource/vehicles/{id}":  VehiclesResource,
-    "/resource/species/{id}": SpeciesResource,
-    "/resource/planets/{id}": PlanetsResource,
-    "default": HomePage
-};
-
-const options = {
-    animation: true
-};
-
-RebelRouter.create("main", routes, options);
+//const routes = {
+//    "/info": InfoPage,
+//    "/resources/{resource}": ResourcesList,
+//    "/resource/people/{id}": PeopleResource,
+//    "/resource/starships/{id}": StarshipsResource,
+//    "/resource/vehicles/{id}":  VehiclesResource,
+//    "/resource/species/{id}": SpeciesResource,
+//    "/resource/planets/{id}": PlanetsResource,
+//    "default": HomePage
+//};
+//
+//const options = {
+//    animation: true
+//};
+//
+//RebelRouter.create("main", routes, options);

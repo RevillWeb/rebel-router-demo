@@ -15,3 +15,5 @@ export class InfoPage extends HTMLElement {
         this.innerHTML = this.template;
     }
 }
+
+document.registerElement("info-page", InfoPage);

@@ -39,3 +39,5 @@ export class PeopleResource extends ResourceItem {
             </div>`;
     }
 }
+
+document.registerElement("people-resource", PeopleResource);

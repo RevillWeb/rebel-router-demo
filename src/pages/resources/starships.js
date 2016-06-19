@@ -35,3 +35,5 @@ export class StarshipsResource extends ResourceItem {
             </div>`;
     }
 }
+
+document.registerElement("starships-resource", StarshipsResource);

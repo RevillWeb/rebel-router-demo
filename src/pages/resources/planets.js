@@ -35,3 +35,5 @@ export class PlanetsResource extends ResourceItem {
             </div>`;
     }
 }
+
+document.registerElement("planets-resource", PlanetsResource);

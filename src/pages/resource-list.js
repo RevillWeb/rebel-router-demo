@@ -122,3 +122,5 @@ export class ResourcesList extends HTMLElement {
         }
     }
 }
+
+document.registerElement("resources-list", ResourcesList);

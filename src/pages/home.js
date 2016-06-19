@@ -25,3 +25,5 @@ export class HomePage extends HTMLElement {
         this.innerHTML = this.template;
     }
 }
+
+document.registerElement("home-page", HomePage);

@@ -33,3 +33,5 @@ export class SpeciesResource extends ResourceItem {
             </div>`;
     }
 }
+
+document.registerElement("species-resource", SpeciesResource);
