@@ -35,4 +35,4 @@ export class VehiclesResource extends ResourceItem {
     }
 }
 
-document.registerElement("vehicle-resource", VehiclesResource);
+document.registerElement("vehicles-resource", VehiclesResource);
