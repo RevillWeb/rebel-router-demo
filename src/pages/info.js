@@ -4,7 +4,7 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-export class InfoPage extends HTMLElement {
+class InfoPage extends HTMLElement {
     createdCallback() {
         this.template = `<p>This is the contact page. <a href="#/">Home</a></p>`;
     }
@@ -16,4 +16,4 @@ export class InfoPage extends HTMLElement {
     }
 }
 
-document.registerElement("info-page", InfoPage);
+window.customElements.define("info-page", InfoPage);

@@ -4,10 +4,11 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-import {ResourceItem} from "../resource-item.js";
-export class StarshipsResource extends ResourceItem {
-    createdCallback() {
-        this.init("starships");
+// import {ResourceItem} from "../resource-item.js";
+class StarshipsResource extends ResourceItem {
+    connectedCallback() {
+        this.type = "starships";
+        super.connectedCallback();
     }
     render() {
         this.$stats.innerHTML = `
@@ -36,4 +37,4 @@ export class StarshipsResource extends ResourceItem {
     }
 }
 
-document.registerElement("starships-resource", StarshipsResource);
+window.customElements.define("starships-resource", StarshipsResource);

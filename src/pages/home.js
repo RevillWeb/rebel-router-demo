@@ -4,8 +4,8 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-export class HomePage extends HTMLElement {
-    createdCallback() {
+class HomePage extends HTMLElement {
+    connectedCallback() {
         this.template = `<div class="home-container">
             <h2>REBEL ROUTER</h2>
             <p>This simple demo application provides an example of Rebel Router in action, a router designed to make building ultra-modern web applications easy without the need for monolithic frameworks.</p>
@@ -17,8 +17,6 @@ export class HomePage extends HTMLElement {
                 <a href="https://github.com/RevillWeb/rebel-router" target="_blank" class="btn"><span class="icon icon-github"></span> Rebel Router</a>
             </div>
         </div>`;
-    }
-    attachedCallback() {
         this.render();
     }
     render() {
@@ -26,4 +24,4 @@ export class HomePage extends HTMLElement {
     }
 }
 
-document.registerElement("home-page", HomePage);
+window.customElements.define("home-page", HomePage);

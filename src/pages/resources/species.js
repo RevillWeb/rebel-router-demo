@@ -4,10 +4,11 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-import {ResourceItem} from "../resource-item.js";
-export class SpeciesResource extends ResourceItem {
-    createdCallback() {
-        this.init("species");
+// import {ResourceItem} from "../resource-item.js";
+class SpeciesResource extends ResourceItem {
+    connectedCallback() {
+        this.type = "species";
+        super.connectedCallback();
     }
     render() {
         this.$stats.innerHTML = `
@@ -34,4 +35,4 @@ export class SpeciesResource extends ResourceItem {
     }
 }
 
-document.registerElement("species-resource", SpeciesResource);
+window.customElements.define("species-resource", SpeciesResource);

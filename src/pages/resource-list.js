@@ -4,10 +4,11 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-export class ResourcesList extends HTMLElement {
-    createdCallback() {
+class ResourcesList extends HTMLElement {
+    connectedCallback() {
+        console.log("CONNECTED");
         this.baseUrl = "http://swapi.co/api/";
-        this.type = null;
+        this.type = this.getAttribute("resource");
         this.page = 1;
         this.response = null;
         this.innerHTML = `
@@ -36,11 +37,6 @@ export class ResourcesList extends HTMLElement {
             }
         });
         this.$pageNum = this.querySelector('#page-num');
-    }
-    static getPageNumber(url) {
-        return url.split("?")[1].split("=")[1];
-    }
-    attachedCallback() {
         this.querySelector(".resource-list").addEventListener("click", (event) => {
             var url = event.target.dataset.url;
             if(url.substr(-1) === '/') {
@@ -51,13 +47,17 @@ export class ResourcesList extends HTMLElement {
             window.location.hash = "/resource/" + this.type + "/" + id;
         });
         this.getData();
+        this._connected = true;
     }
-    attributeChangedCallback(name) {
-        switch (name) {
-            case "resource":
-                this.type = this.getAttribute("resource");
-                this.getData();
-                break;
+    static getPageNumber(url) {
+        return url.split("?")[1].split("=")[1];
+    }
+    static get observedAttributes() { return ["resource"]; }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue !== newValue && this._connected === true) {
+            console.log("ATTRIBUTE CHANGED");
+            this.type = newValue;
+            this.getData();
         }
     }
     getTypeIcon() {
@@ -123,4 +123,4 @@ export class ResourcesList extends HTMLElement {
     }
 }
 
-document.registerElement("resources-list", ResourcesList);
+window.customElements.define("resources-list", ResourcesList);

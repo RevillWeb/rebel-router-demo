@@ -4,11 +4,11 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-export class ResourceItem extends HTMLElement {
-    init(type) {
+class ResourceItem extends HTMLElement {
+    connectedCallback() {
+        console.log("RESOURCE TYPE:", this.type);
         this.baseUrl = "http://swapi.co/api/";
-        this.id = null;
-        this.type = type;
+        this.id = this.getAttribute("id");
         this.data = {};
         this.innerHTML = `
             <rebel-loading id="loading" color="#ff6" background-color="#000"></rebel-loading>
@@ -18,19 +18,16 @@ export class ResourceItem extends HTMLElement {
         `;
         this.$loader = this.querySelector('#loading');
         this.$stats = this.querySelector('#stats');
-        this.initialised = true;
+        this.getData();
+        this._connected = true;
     }
-    attributeChangedCallback(name) {
+    static get observedAttributes() { return ["id"]; }
+    attributeChangedCallback(name, oldValue, newValue) {
         //This fires too early in IE11 - so just check to make sure we have initialised.
-        if (this.initialised === true) {
-            const value = this.getAttribute(name);
-            if (value != "null") {
-                switch (name) {
-                    case "id":
-                        this.id = value;
-                        this.getData();
-                        break;
-                }
+        if (this._connected === true && oldValue !== newValue) {
+            if (value != null) {
+                this.id = newValue;
+                this.getData();
             }
         }
     }

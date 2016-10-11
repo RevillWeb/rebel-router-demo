@@ -96,28 +96,27 @@
 	/**
 	 * The main router class and entry point to the router.
 	 */
-
 	var RebelRouter = exports.RebelRouter = function (_HTMLElement) {
 	    _inherits(RebelRouter, _HTMLElement);
 
 	    function RebelRouter() {
 	        _classCallCheck(this, RebelRouter);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelRouter).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (RebelRouter.__proto__ || Object.getPrototypeOf(RebelRouter)).apply(this, arguments));
 	    }
 
 	    _createClass(RebelRouter, [{
-	        key: "createdCallback",
+	        key: "connectedCallback",
 
 
 	        /**
 	         * Main initialisation point of rebel-router
 	         * @param prefix - If extending rebel-router you can specify a prefix when calling createdCallback in case your elements need to be named differently
 	         */
-	        value: function createdCallback(prefix) {
+	        value: function connectedCallback() {
 	            var _this2 = this;
 
-	            var _prefix = prefix || "rebel";
+	            var _prefix = "rebel";
 
 	            this.previousPath = null;
 	            this.basePath = null;
@@ -384,7 +383,7 @@
 	    }, {
 	        key: "isRegisteredElement",
 	        value: function isRegisteredElement(name) {
-	            return document.createElement(name).constructor !== HTMLElement;
+	            return window.customElements.get(name) !== undefined;
 	        }
 
 	        /**
@@ -399,7 +398,7 @@
 	            var name = RebelRouter.classToTag(Class);
 	            if (RebelRouter.isRegisteredElement(name) === false) {
 	                Class.prototype.name = name;
-	                document.registerElement(name, Class);
+	                window.customElements.define(name, Class);
 	            }
 	            return name;
 	        }
@@ -463,7 +462,7 @@
 	            var result = RebelRouter.parseQueryString(path);
 	            var re = /{(\w+)}/g;
 	            var results = [];
-	            var match = undefined;
+	            var match = void 0;
 	            while (match = re.exec(route)) {
 	                results.push(match[1]);
 	            }
@@ -494,7 +493,7 @@
 	    return RebelRouter;
 	}(HTMLElement);
 
-	document.registerElement("rebel-router", RebelRouter);
+	window.customElements.define("rebel-router", RebelRouter);
 
 	/**
 	 * Class which represents the rebel-route custom element
@@ -506,13 +505,13 @@
 	    function RebelRoute() {
 	        _classCallCheck(this, RebelRoute);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelRoute).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (RebelRoute.__proto__ || Object.getPrototypeOf(RebelRoute)).apply(this, arguments));
 	    }
 
 	    return RebelRoute;
 	}(HTMLElement);
 
-	document.registerElement("rebel-route", RebelRoute);
+	window.customElements.define("rebel-route", RebelRoute);
 
 	/**
 	 * Class which represents the rebel-default custom element
@@ -524,13 +523,13 @@
 	    function RebelDefault() {
 	        _classCallCheck(this, RebelDefault);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelDefault).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (RebelDefault.__proto__ || Object.getPrototypeOf(RebelDefault)).apply(this, arguments));
 	    }
 
 	    return RebelDefault;
 	}(HTMLElement);
 
-	document.registerElement("rebel-default", RebelDefault);
+	window.customElements.define("rebel-default", RebelDefault);
 
 	/**
 	 * Represents the prototype for an anchor element which added functionality to perform a back transition.
@@ -542,12 +541,12 @@
 	    function RebelBackA() {
 	        _classCallCheck(this, RebelBackA);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelBackA).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (RebelBackA.__proto__ || Object.getPrototypeOf(RebelBackA)).apply(this, arguments));
 	    }
 
 	    _createClass(RebelBackA, [{
-	        key: "attachedCallback",
-	        value: function attachedCallback() {
+	        key: "connectedCallback",
+	        value: function connectedCallback() {
 	            var _this7 = this;
 
 	            this.addEventListener("click", function (event) {
@@ -568,9 +567,8 @@
 	 */
 
 
-	document.registerElement("rebel-back-a", {
-	    extends: "a",
-	    prototype: RebelBackA.prototype
+	window.customElements.define("rebel-back-a", RebelBackA, {
+	    extends: "a"
 	});
 
 	/**
@@ -619,14 +617,13 @@
 	 * GitHub: https://github.com/RevillWeb
 	 * Twitter: @RevillWeb
 	 */
-
 	var HomePage = exports.HomePage = function (_HTMLElement) {
 	    _inherits(HomePage, _HTMLElement);
 
 	    function HomePage() {
 	        _classCallCheck(this, HomePage);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(HomePage).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (HomePage.__proto__ || Object.getPrototypeOf(HomePage)).apply(this, arguments));
 	    }
 
 	    _createClass(HomePage, [{
@@ -649,7 +646,7 @@
 	    return HomePage;
 	}(HTMLElement);
 
-	document.registerElement("home-page", HomePage);
+	window.customElements.define("home-page", HomePage);
 
 /***/ },
 /* 3 */
@@ -675,14 +672,13 @@
 	 * GitHub: https://github.com/RevillWeb
 	 * Twitter: @RevillWeb
 	 */
-
 	var ResourcesList = exports.ResourcesList = function (_HTMLElement) {
 	    _inherits(ResourcesList, _HTMLElement);
 
 	    function ResourcesList() {
 	        _classCallCheck(this, ResourcesList);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ResourcesList).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (ResourcesList.__proto__ || Object.getPrototypeOf(ResourcesList)).apply(this, arguments));
 	    }
 
 	    _createClass(ResourcesList, [{
@@ -815,7 +811,7 @@
 	    return ResourcesList;
 	}(HTMLElement);
 
-	document.registerElement("resources-list", ResourcesList);
+	window.customElements.define("resources-list", ResourcesList);
 
 /***/ },
 /* 4 */
@@ -850,7 +846,7 @@
 	    function PeopleResource() {
 	        _classCallCheck(this, PeopleResource);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PeopleResource).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (PeopleResource.__proto__ || Object.getPrototypeOf(PeopleResource)).apply(this, arguments));
 	    }
 
 	    _createClass(PeopleResource, [{
@@ -874,7 +870,7 @@
 	    return PeopleResource;
 	}(_resourceItem.ResourceItem);
 
-	document.registerElement("people-resource", PeopleResource);
+	window.customElements.define("people-resource", PeopleResource);
 
 /***/ },
 /* 5 */
@@ -900,14 +896,13 @@
 	 * GitHub: https://github.com/RevillWeb
 	 * Twitter: @RevillWeb
 	 */
-
 	var ResourceItem = exports.ResourceItem = function (_HTMLElement) {
 	    _inherits(ResourceItem, _HTMLElement);
 
 	    function ResourceItem() {
 	        _classCallCheck(this, ResourceItem);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ResourceItem).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (ResourceItem.__proto__ || Object.getPrototypeOf(ResourceItem)).apply(this, arguments));
 	    }
 
 	    _createClass(ResourceItem, [{
@@ -1010,7 +1005,7 @@
 	    function StarshipsResource() {
 	        _classCallCheck(this, StarshipsResource);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(StarshipsResource).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (StarshipsResource.__proto__ || Object.getPrototypeOf(StarshipsResource)).apply(this, arguments));
 	    }
 
 	    _createClass(StarshipsResource, [{
@@ -1028,7 +1023,7 @@
 	    return StarshipsResource;
 	}(_resourceItem.ResourceItem);
 
-	document.registerElement("starships-resource", StarshipsResource);
+	window.customElements.define("starships-resource", StarshipsResource);
 
 /***/ },
 /* 7 */
@@ -1063,7 +1058,7 @@
 	    function VehiclesResource() {
 	        _classCallCheck(this, VehiclesResource);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(VehiclesResource).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (VehiclesResource.__proto__ || Object.getPrototypeOf(VehiclesResource)).apply(this, arguments));
 	    }
 
 	    _createClass(VehiclesResource, [{
@@ -1081,7 +1076,7 @@
 	    return VehiclesResource;
 	}(_resourceItem.ResourceItem);
 
-	document.registerElement("vehicles-resource", VehiclesResource);
+	window.customElements.define("vehicles-resource", VehiclesResource);
 
 /***/ },
 /* 8 */
@@ -1116,7 +1111,7 @@
 	    function SpeciesResource() {
 	        _classCallCheck(this, SpeciesResource);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SpeciesResource).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (SpeciesResource.__proto__ || Object.getPrototypeOf(SpeciesResource)).apply(this, arguments));
 	    }
 
 	    _createClass(SpeciesResource, [{
@@ -1134,7 +1129,7 @@
 	    return SpeciesResource;
 	}(_resourceItem.ResourceItem);
 
-	document.registerElement("species-resource", SpeciesResource);
+	window.customElements.define("species-resource", SpeciesResource);
 
 /***/ },
 /* 9 */
@@ -1169,7 +1164,7 @@
 	    function PlanetsResource() {
 	        _classCallCheck(this, PlanetsResource);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PlanetsResource).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (PlanetsResource.__proto__ || Object.getPrototypeOf(PlanetsResource)).apply(this, arguments));
 	    }
 
 	    _createClass(PlanetsResource, [{
@@ -1187,7 +1182,7 @@
 	    return PlanetsResource;
 	}(_resourceItem.ResourceItem);
 
-	document.registerElement("planets-resource", PlanetsResource);
+	window.customElements.define("planets-resource", PlanetsResource);
 
 /***/ },
 /* 10 */
@@ -1213,14 +1208,13 @@
 	 * GitHub: https://github.com/RevillWeb
 	 * Twitter: @RevillWeb
 	 */
-
 	var InfoPage = exports.InfoPage = function (_HTMLElement) {
 	    _inherits(InfoPage, _HTMLElement);
 
 	    function InfoPage() {
 	        _classCallCheck(this, InfoPage);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(InfoPage).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (InfoPage.__proto__ || Object.getPrototypeOf(InfoPage)).apply(this, arguments));
 	    }
 
 	    _createClass(InfoPage, [{
@@ -1243,7 +1237,7 @@
 	    return InfoPage;
 	}(HTMLElement);
 
-	document.registerElement("info-page", InfoPage);
+	window.customElements.define("info-page", InfoPage);
 
 /***/ },
 /* 11 */
@@ -1255,7 +1249,7 @@
 	    value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1278,7 +1272,7 @@
 	    function RebelRepeater() {
 	        _classCallCheck(this, RebelRepeater);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelRepeater).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (RebelRepeater.__proto__ || Object.getPrototypeOf(RebelRepeater)).apply(this, arguments));
 	    }
 
 	    _createClass(RebelRepeater, [{
@@ -1397,14 +1391,13 @@
 	 * GitHub: https://github.com/RevillWeb
 	 * Twitter: @RevillWeb
 	 */
-
 	var RebelLoading = exports.RebelLoading = function (_HTMLElement) {
 	    _inherits(RebelLoading, _HTMLElement);
 
 	    function RebelLoading() {
 	        _classCallCheck(this, RebelLoading);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RebelLoading).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (RebelLoading.__proto__ || Object.getPrototypeOf(RebelLoading)).apply(this, arguments));
 	    }
 
 	    _createClass(RebelLoading, [{

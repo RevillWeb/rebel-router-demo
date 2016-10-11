@@ -4,10 +4,11 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-import {ResourceItem} from "../resource-item.js";
-export class PeopleResource extends ResourceItem {
-    createdCallback() {
-        this.init("people");
+// import {ResourceItem} from "../resource-item.js";
+class PeopleResource extends ResourceItem {
+    connectedCallback() {
+        this.type = "people";
+        super.connectedCallback();
     }
     render() {
         let genderIcon = "transgender-alt";
@@ -40,4 +41,4 @@ export class PeopleResource extends ResourceItem {
     }
 }
 
-document.registerElement("people-resource", PeopleResource);
+window.customElements.define("people-resource", PeopleResource);

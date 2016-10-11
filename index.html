@@ -5,10 +5,24 @@
     <title>Rebel Router Example</title>
     <link rel="stylesheet" href="assets/css/icons.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <script src="assets/js/webcomponents.min.js"></script>
+    <!--<script src="assets/js/webcomponents.min.js"></script>-->
+    <script src="https://unpkg.com/skatejs-web-components/dist/index-with-deps.min.js"></script>
+    <script src="node_modules/rebel-repeater/dist/rebel-repeater.js"></script>
+    <script src="node_modules/rebel-loading/dist/rebel-loading.js"></script>
+    <script src="src/rebel-router.js"></script>
+    <script src="src/pages/home.js"></script>
+    <script src="src/pages/info.js"></script>
+    <script src="src/pages/resource-item.js"></script>
+    <script src="src/pages/resource-list.js"></script>
+    <script src="src/pages/resources/species.js"></script>
+    <script src="src/pages/resources/starships.js"></script>
+    <script src="src/pages/resources/vehicles.js"></script>
+    <script src="src/pages/resources/people.js"></script>
+    <script src="src/pages/resources/planets.js"></script>
+
 </head>
 <body>
-    <script src="dist/bundle.js"></script>
+    <!--<script src="dist/bundle.js"></script>-->
     <div class="wrapper">
         <header id="main-header">
             REBEL ROUTER DEMO
@@ -23,7 +37,7 @@
             <a href="#/resources/planets"><span class="icon icon-planet2"></span> Planets</a>
         </nav>
         <section id="main-container">
-            <rebel-router animation="true" shadow="false">
+            <rebel-router animation="false" shadow="false">
                 <rebel-route path="/info" component="info-page"></rebel-route>
                 <rebel-route path="/resources/{resource}" component="resources-list"></rebel-route>
                 <rebel-route path="/resource/people/{id}" component="people-resource"></rebel-route>

@@ -4,10 +4,11 @@
  * GitHub: https://github.com/RevillWeb
  * Twitter: @RevillWeb
  */
-import {ResourceItem} from "../resource-item.js";
-export class PlanetsResource extends ResourceItem {
-    createdCallback() {
-        this.init("planets");
+// import {ResourceItem} from "../resource-item.js";
+class PlanetsResource extends ResourceItem {
+    connectedCallback() {
+        this.type = "planets";
+        super.connectedCallback();
     }
     render() {
         this.$stats.innerHTML = `
@@ -36,4 +37,4 @@ export class PlanetsResource extends ResourceItem {
     }
 }
 
-document.registerElement("planets-resource", PlanetsResource);
+window.customElements.define("planets-resource", PlanetsResource);
