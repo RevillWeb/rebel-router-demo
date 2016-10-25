@@ -1,0 +1,16 @@
+<template id="about">
+    <h1>About page</h1>
+</template>
+<script>
+    (function(_doc){
+        window.customElements.define("about-page", class extends HTMLElement {
+            constructor() {
+                super();
+                this._$tpl = _doc.querySelector("#about").content.cloneNode(true);
+            }
+            connectedCallback() {
+                this.appendChild(this._$tpl);
+            }
+        });
+    })(document.currentScript.ownerDocument);
+</script>
