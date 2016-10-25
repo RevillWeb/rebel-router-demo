@@ -29,16 +29,14 @@
             <a href="#/resources/planets"><span class="icon icon-planet2"></span> Planets</a>
         </nav>
         <section id="main-container">
-            <rebel-router animation="false" shadow="false">
+            <rebel-router animation="true" shadow="false">
                 <rebel-route path="/info">
                     <template>
                         <h1>This is the info page. ${test}</h1>
                     </template>
                 </rebel-route>
                 <rebel-route path="/contact" template="src/pages/contact.html"></rebel-route>
-                <rebel-route path="/about" ctrl-element="about-page" preload="['src/pages/about.html']">
-
-                </rebel-route>
+                <rebel-route path="/about" ctrl-element="about-page" preload="['src/pages/about.html']"></rebel-route>
                 <rebel-default ctrl-element="home-page"></rebel-default>
             </rebel-router>
         </section>

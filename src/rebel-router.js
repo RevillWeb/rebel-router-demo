@@ -21,17 +21,15 @@ class RebelRouter extends HTMLElement {
         self.basePath = null;
         self._routes = [];
         self._options = {};
-        self._bootstrapped = false;
-
+        self._$view = null;
         self.addEventListener("rebel-add-route", (event) => {
             event.detail.then((route) => {
-                console.log("ROUTE:", route);
                 const path = (this.basePath !== null) ? self.basePath + route.path : route.path;
                 self.routes[path] = {
                     "ctrlElement": route["ctrlElement"],
                     "template": route.template
                 };
-                route.$element.remove();
+                //route.$element.remove();
                 self.render();
             }).catch((error) => {
                 throw new Error(error);
@@ -54,6 +52,10 @@ class RebelRouter extends HTMLElement {
     }
 
     connectedCallback() {
+
+        this._$view = document.createElement("rebel-view");
+        this.appendChild(this._$view);
+        this.appendChild(document.createComment("<[ROUTER CONFIG]>"));
 
         //Get options
         this._options = {
@@ -95,7 +97,8 @@ class RebelRouter extends HTMLElement {
     initAnimation() {
         const observer = new MutationObserver((mutations) => {
             let node = mutations[0].addedNodes[0];
-            if (node !== undefined) {
+            //console.log("NODE:", node.tagName);
+            if (node !== undefined && ["rebel-route", "rebel-default"].indexOf(node.tagName) === -1) {
                 const otherChildren = this.getOtherChildren(node);
                 node.classList.add("rebel-animate");
                 node.classList.add("enter");
@@ -113,15 +116,15 @@ class RebelRouter extends HTMLElement {
                     }, 10);
                 }, 10);
                 const animationEnd = (event) => {
-                    if (event.target.className.indexOf("exit") > -1) {
-                        this.removeChild(event.target);
+                    if (event.target.classList.contains("exit")) {
+                        this._$view.removeChild(event.target);
                     }
                 };
                 node.addEventListener("transitionend", animationEnd);
                 node.addEventListener("animationend", animationEnd);
             }
         });
-        observer.observe(this, {childList: true});
+        observer.observe(this._$view, {childList: true});
     }
 
     /**
@@ -149,11 +152,12 @@ class RebelRouter extends HTMLElement {
     render() {
         this._bootstrapped = true;
         const result = this.current();
-        console.log("CURRENT:", result, this.previousPath);
         if (result !== null) {
+            console.log("RENDER:", result.path, this.previousPath);
+            if (result.path === this.previousPath) return;
             this.previousPath = result.path;
             if (this.options.animation !== true) {
-                this.innerHTML = "";
+                this._$view.innerHTML = "";
             }
             if (result.ctrlElement !== null) {
                 let $ctrlElement = document.createElement(result.ctrlElement);
@@ -168,7 +172,7 @@ class RebelRouter extends HTMLElement {
                     }
                     $ctrlElement.setAttribute(key, value);
                 }
-                this.appendChild($ctrlElement);
+                this._$view.appendChild($ctrlElement);
             } else {
                 let $template = result.template;
                 //TODO: Find a faster alternative
@@ -180,7 +184,7 @@ class RebelRouter extends HTMLElement {
                         }
                     );
                 }
-                this.innerHTML = $template.replace(/\${(.*)}/, "");
+                this._$view.innerHTML = $template.replace(/\${(.*)}/, "");
             }
         }
     }
@@ -192,7 +196,7 @@ class RebelRouter extends HTMLElement {
      * @returns {Array}
      */
     getOtherChildren(node) {
-        const children = this.children;
+        const children = this._$view.children;
         let results = [];
         for (let i = 0; i < children.length; i++) {
             let child = children[i];
@@ -395,7 +399,7 @@ class RebelRoute extends HTMLElement {
         const detail = Object.assign({
             "path": this.getAttribute("path"),
             "ctrlElement": this.getAttribute("ctrl-element"),
-            "template": tplString,
+            "template": "<rebel-template>" + tplString + "</rebel-template>",
             "$element": this
         }, this._defaults);
         if (detail.path === null) {
@@ -433,6 +437,7 @@ class RebelRoute extends HTMLElement {
     //
     // }
     connectedCallback(defaults) {
+        this.style.display = "none";
         this._defaults = defaults;
         this.dispatchEvent(new CustomEvent("rebel-add-route", {
             "detail": this._getTemplate(),
