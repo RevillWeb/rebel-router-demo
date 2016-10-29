@@ -16,98 +16,29 @@ class RebelRouter extends HTMLElement {
     constructor(self) {
         self = super(self);
         self._previousRoute = null;
-        self.basePath = null;
+        self._basePath = null;
         self._routes = {};
         self._options = {};
         self._initialised = false;
         //Used to determine if we are half way through a render / transition
         self._renderLock = false;
-        //if (this.options.inherit === true) {
-            //If this is a nested router then we need to go and get the parent path
-
-        //}
-        // document.dispatchEvent(new CustomEvent("rebel-get-base", {
-        //     "detail": {
-        //         "callback": (base) => {
-        //             console.log("SET BASE TO:", base);
-        //             self.basePath = base;
-        //         }
-        //     },
-        //     "bubbles": true
-        // }));
-        // //self.dispatchEvent(new CustomEvent("rebel-get-base", {detail: }, bubbles: true}) );
-        // document.addEventListener("rebel-get-base", (event) => {
-        //     console.log("GET BASE!");
-        //     event.stopImmediatePropagation();
-        //     const detail = event.detail;
-        //     var $current = self._current();
-        //     if ($current !== null && $current.path !== "*") {
-        //         detail.callback($current.path);
-        //     }
-        // });
-
-        // var observer = new MutationObserver(function(mutations) {
-        //     mutations.forEach(function(mutation) {
-        //         mutation.addedNodes.forEach((node) => {
-        //             if (["REBEL-ROUTE", "REBEL-DEFAULT"].indexOf(node.nodeName) > -1 && node.initialised === false) {
-        //                 console.log("FALSE");
-        //                 //render = false;
-        //             } else {
-        //                 console.log("TRUE", self.children.length);
-        //             }
-        //         });
-        //     });
-        // });
-        // observer.observe(self, {childList: true});
         const addRoute = (event) => {
             //Prevent the route event from bubbling up any further
             event.stopImmediatePropagation();
-            // if (self.getAttribute("id")=="sub") {
-            //     console.log("SUB ROUTES:", self._routes);
-            // }
             const route = event.detail;
-            //const base = self._getBasePath();
-            //console.log("BASE:", base);
-            //const path = (base !== null && route.path !== "*") ? base + route.path : route.path;
-
             self._routes[route.path] = route.$element;
-            self.removeChild(route.$element);
-            if (self.getAttribute("id")=="sub") {
-                //console.log("CHILDREN:", self.children);
+            let render = true;
+            for (let i = 0; i < self.children.length; i++) {
+                var $child = self.children[i];
+                if ($child.initialised === false) {
+                    render = false;
+                }
             }
-            // let render = true;
-            // console.log(self.childNodes);
-            // self.childNodes.forEach(($child) => {
-            //     console.log($child.initialised);
-            //     // if (["REBEL-ROUTE", "REBEL-DEFAULT"].indexOf($child.nodeName) > -1) {
-            //     //
-            //     // }
-            //     // if ($child.initialised === true) {
-            //     //     render = true;
-            //     // }
-            // });
-            // console.log("RENDER?", render);
-            // for (let i = 0; i < self.children.length; i++) {
-            //     const $child = self.children[i];
-            //     if (["REBEL-ROUTE", "REBEL-DEFAULT"].indexOf($child.nodeName) > -1 && $child.initialised === false) {
-            //         render = false;
-            //     }
-            // }
-            // if (render === true) {
-                //self.removeEventListener("rebel-add-route", addRoute);
-           // if (render === true) {
+            if (render === true) {
                 self._render();
-           // }
-
-
-            // }
+            }
         };
-
         self.addEventListener("rebel-add-route", addRoute);
-        self.addEventListener("rebel-render", () => {
-            self._render();
-        });
-
         return self;
     }
 
@@ -132,30 +63,13 @@ class RebelRouter extends HTMLElement {
     }
 
     connectedCallback() {
-        //if (this._initialised === true) return;
-        //this._initialised = true;
-        //this.appendChild(document.createElement("p"));
-        // console.log("CONNECTED:", this.getAttribute("id"));
-        // console.log("CHILD NODES:", this.childNodes.length);
-        let num = 0;
-        this.childNodes.forEach(($child) => {
-            if (["REBEL-ROUTE", "REBEL-DEFAULT"].indexOf($child.nodeName) > -1) {
-                num++;
-            }
-            // if ($child.initialised === true) {
-            //     render = true;
-            // }
-        });
-        console.log(num);
-
+        this._basePath = this._getBasePath();
         //Get options
         this._options = {
             "animation": (this.getAttribute("animation") == "true"),
             "shadowRoot": (this.getAttribute("shadow") == "true"),
             "inherit": (this.getAttribute("inherit") != "false")
         };
-
-
         RebelRouter.pathChange((isBack) => {
             if (this.options.animation === true) {
                 if (isBack === true) {
@@ -174,9 +88,8 @@ class RebelRouter extends HTMLElement {
      */
     _current() {
         let path = RebelRouter.getPathFromUrl();
-        const base = this._getBasePath();
-        if (base !== null) {
-            path = path.replace(base, "");
+        if (this._basePath !== null) {
+            path = path.replace(this._basePath, "");
         }
         for (const routeString in this._routes) {
             if (routeString !== "*") {
@@ -195,24 +108,21 @@ class RebelRouter extends HTMLElement {
     _render() {
         if (this._renderLock === true) return;
         const $current = this._current();
-        // console.log("CURRENT:", this.getAttribute("id"), $current);
         if ($current !== null) {
             this._renderLock = true;
             if ($current !== this._previousRoute) {
-                console.log("PR:", this._previousRoute);
+                if (this.getAttribute("id") === "sub") {
+                    console.log("PR:", this._previousRoute);
+                }
                 $current.load().then(() => {
-                    this.appendChild($current);
                     let promises = [];
-                    if (this._options.animation === true && this._previousRoute !== null) {
-                        promises.push($current.in());
+                    if (this._previousRoute !== null) {
+                        promises.push($current.in(this._options.animation));
                     }
                     if (this._previousRoute !== null) {
-                        promises.push(this._previousRoute.out());
+                        promises.push(this._previousRoute.out(this._options.animation));
                     }
                     Promise.all(promises).then(() => {
-                        if (this._previousRoute !== null) {
-                            this.removeChild(this._previousRoute);
-                        }
                         this._renderLock = false;
                         this._previousRoute = $current;
                     }).catch((error) => {
@@ -383,6 +293,7 @@ class RebelRoute extends HTMLElement {
     constructor() {
         super();
         this._initialised = false;
+        this._loaded = false;
         this._path = null;
         this._regex = null;
     }
@@ -397,10 +308,10 @@ class RebelRoute extends HTMLElement {
     }
     load() {
         return new Promise((resolve) => {
-            const newHTML = RebelRouter.interpolateString(this.$template, RebelRouter.getParamsFromUrl(this._regex, this._path));
-            //Only update the DOM if something has changed - this seems to easy, right?
-            if (newHTML != this.innerHTML) {
-                this.innerHTML = newHTML;
+            this.style.display = "inherit";
+            if (this._loaded === false) {
+                this.innerHTML = this.$template;
+                this._loaded = true;
             }
             resolve();
         });
@@ -411,41 +322,52 @@ class RebelRoute extends HTMLElement {
             reject("Transition for route '" + this.path + "' never ended.");
         }, 5000);
     }
-    in() {
+    in(animate) {
         return new Promise((resolve, reject) => {
-           var fb = this._setTransitionFallback(reject);
-            const onTransitionEnd = () => {
-                clearTimeout(fb);
-                this.removeEventListener('transitionend', onTransitionEnd);
-                this.classList.remove('enter');
-                this.classList.remove('complete');
+            if (animate === true) {
+                var fb = this._setTransitionFallback(reject);
+                const onTransitionEnd = () => {
+                    clearTimeout(fb);
+                    this.removeEventListener('transitionend', onTransitionEnd);
+                    this.classList.remove('enter');
+                    this.classList.remove('complete');
+                    this.style.display = "inherit";
+                    resolve();
+                };
+                this.classList.add('rebel-animate');
+                this.classList.add('enter');
+                setTimeout(() => {
+                    this.classList.add('complete');
+                }, 100);
+                this.addEventListener('transitionend', onTransitionEnd);
+            } else {
+                this.style.display = "inherit";
                 resolve();
-            };
-            this.classList.add('rebel-animate');
-            this.classList.add('enter');
-            setTimeout(() => {
-                this.classList.add('complete');
-            }, 100);
-
-            this.addEventListener('transitionend', onTransitionEnd);
+            }
         });
     }
-    out() {
+    out(animate) {
         return new Promise((resolve, reject) => {
-            var fb = this._setTransitionFallback(reject);
-            const onTransitionEnd = () => {
-                clearTimeout(fb);
-                this.removeEventListener('transitionend', onTransitionEnd);
-                this.classList.remove('exit');
-                this.classList.remove('complete');
+            if (animate === true) {
+                var fb = this._setTransitionFallback(reject);
+                const onTransitionEnd = () => {
+                    clearTimeout(fb);
+                    this.removeEventListener('transitionend', onTransitionEnd);
+                    this.classList.remove('exit');
+                    this.classList.remove('complete');
+                    this.style.display = "none";
+                    resolve();
+                };
+                this.classList.add('rebel-animate');
+                this.classList.add('exit');
+                setTimeout(() => {
+                    this.classList.add('complete');
+                }, 100);
+                this.addEventListener('transitionend', onTransitionEnd);
+            } else {
+                this.style.display = "none";
                 resolve();
-            };
-            this.classList.add('rebel-animate');
-            this.classList.add('exit');
-            setTimeout(() => {
-                this.classList.add('complete');
-            }, 100);
-            this.addEventListener('transitionend', onTransitionEnd);
+            }
         });
     }
     _initialise() {
@@ -500,6 +422,9 @@ class RebelRoute extends HTMLElement {
                 console.error(error);
             });
         }
+    }
+    static parseRouteParams(string) {
+        return RebelRouter.interpolateString(string, RebelRouter.getParamsFromUrl(this._regex, this._path));
     }
 }
 window.customElements.define("rebel-route", RebelRoute);

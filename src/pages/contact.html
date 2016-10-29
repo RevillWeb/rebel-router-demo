@@ -1,14 +1,16 @@
 <template>
     <h1>This is the contact page! ===========</h1>
-    <rebel-router animation="true" id="sub">
-        <rebel-route path="/sub1">
-            <template>
-                <h1>This is the sub one page!</h1>
-            </template>
-        </rebel-route>
-        <rebel-default>
-            <h1>This is default sub page!</h1>
-        </rebel-default>
-    </rebel-router>
+    <div style="position: relative;">
+        <rebel-router animation="true" id="sub">
+            <rebel-route path="/sub1">
+                <template>
+                    <h1>This is the sub one page!</h1>
+                </template>
+            </rebel-route>
+            <rebel-default>
+                <h1>This is default sub page!</h1>
+            </rebel-default>
+        </rebel-router>
+    </div>
 </template>
 
